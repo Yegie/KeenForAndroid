@@ -151,36 +151,48 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(hasActiveCords())
+        if(gameState.getPuzzleWon())
         {
-            int X = gameState.getActiveX();
-            int Y = gameState.getActiveY();
+            TextGuessPaint.setColor(Color.argb(255, 100, 100, 100));
+            canvas.drawRect(0,0,screenWidth,screenHeight,TextGuessPaint);
+            TextGuessPaint.setColor(Color.WHITE);
+            canvas.drawText("You Win",screenWidth/2,screenHeight/2,TextGuessPaint);
+            TextGuessPaint.setColor(Color.BLACK);
+        } else
+        {
 
-            if(gameState.getFinalGuess())
+            if(hasActiveCords())
             {
-                canvas.drawRect(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize,gridStartX+(X+1)/(float)size* gridSize,gridStartY+(Y+1)/(float)size* gridSize,ActiveGridPaint);
-            }else
-            {
-                Path points = new Path();
-                points.moveTo(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
-                points.lineTo(gridStartX+((float)X+0.4f)/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
-                points.lineTo(gridStartX+X/(float)size* gridSize,gridStartY+((float)Y+0.4f)/(float)size* gridSize);
-                points.close();
+                int X = gameState.getActiveX();
+                int Y = gameState.getActiveY();
 
-                canvas.drawPath(points,ActiveGridPaint);
+                if(gameState.getFinalGuess())
+                {
+                    canvas.drawRect(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize,gridStartX+(X+1)/(float)size* gridSize,gridStartY+(Y+1)/(float)size* gridSize,ActiveGridPaint);
+                }else
+                {
+                    Path points = new Path();
+                    points.moveTo(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
+                    points.lineTo(gridStartX+((float)X+0.4f)/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
+                    points.lineTo(gridStartX+X/(float)size* gridSize,gridStartY+((float)Y+0.4f)/(float)size* gridSize);
+                    points.close();
+
+                    canvas.drawPath(points,ActiveGridPaint);
+                }
+
             }
+            for(int i = 0; i < size; i++)
+                canvas.drawLine(gridStartX,gridStartY+i/(float)size* gridSize,gridEndX,gridStartY+i/(float)size* gridSize,ThinGridPaint);
+            for(int i = 0; i < size; i++)
+                canvas.drawLine(gridStartX+i/(float)size* gridSize,gridStartY,gridStartX+i/(float)size* gridSize,gridEndY,ThinGridPaint);
+
+            drawZoneBordersAndLabels(canvas);
+
+            drawButtonPanel(canvas);
+
+            drawGuess(canvas);
 
         }
-        for(int i = 0; i < size; i++)
-            canvas.drawLine(gridStartX,gridStartY+i/(float)size* gridSize,gridEndX,gridStartY+i/(float)size* gridSize,ThinGridPaint);
-        for(int i = 0; i < size; i++)
-            canvas.drawLine(gridStartX+i/(float)size* gridSize,gridStartY,gridStartX+i/(float)size* gridSize,gridEndY,ThinGridPaint);
-
-        drawZoneBordersAndLabels(canvas);
-
-        drawButtonPanel(canvas);
-
-        drawGuess(canvas);
 
     }
 

@@ -70,6 +70,7 @@ public class KeenModel {
 
 
     private boolean finalGuess;
+    private boolean puzzleWonVal;
     private int activeX;
     private int activeY;
     private int size;
@@ -83,6 +84,7 @@ public class KeenModel {
         this.gameGrid = grid;
         this.gameZones = zones;
         this.finalGuess = true;
+        this.puzzleWonVal = false;
         activeX = -1;
         activeY = -1;
     }
@@ -110,10 +112,30 @@ public class KeenModel {
         if(gameGrid[x][y].finalGuessValue == guess)
         {
             gameGrid[x][y].finalGuessValue = -1;
-        }else {
+        } else {
             gameGrid[x][y].finalGuessValue = guess;
         }
     }
+
+    public void puzzleWon()
+    {
+        puzzleWonVal = setPuzzleWon();
+    }
+
+    private boolean setPuzzleWon()
+    {
+        for(int x = 0; x < size; x++)
+            for(int y = 0; y < size; y++)
+                if(gameGrid[x][y].finalGuessValue != gameGrid[x][y].expectedValue)
+                    return false;
+        return true;
+    }
+
+    public boolean getPuzzleWon()
+    {
+        return puzzleWonVal;
+    }
+
     public void addToCellGuesses(int x, int y, int guess){
         gameGrid[x][y].guesses[guess-1] = !gameGrid[x][y].guesses[guess-1];
     }

@@ -6,14 +6,18 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="org.yegie.keenforandroid.KeenActivity">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        >
+        <activity android:name="org.yegie.keenforandroid.MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="org.yegie.keenforandroid.KeenActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

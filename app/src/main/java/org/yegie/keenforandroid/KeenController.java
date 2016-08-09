@@ -60,6 +60,8 @@ public class KeenController implements KeenView.OnGridClickListener {
 
         }
 
+        gameModel.puzzleWon();
+
         gameView.invalidate();
 
     }
