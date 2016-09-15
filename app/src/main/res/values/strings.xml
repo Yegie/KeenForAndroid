@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Keen for Android</string>
+    <string name="title">Keen</string>
+    <string name="play">Play Level</string>
+    <string name="diff">Difficulty</string>
+    <string name="size">Size</string>
+    <string name="mult">Multiplication Only</string>
+    <string-array name="diff_list">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+        <item>Extreme</item>
+        <item>Unreasonable</item>
+    </string-array>
+    <string-array name="size_list">
+        <item>3 by 3</item>
+        <item>4 by 4</item>
+        <item>5 by 5</item>
+        <item>6 by 6</item>
+        <item>7 by 7</item>
+        <item>8 by 8</item>
+        <item>9 by 9</item>
+    </string-array>
 </resources>
