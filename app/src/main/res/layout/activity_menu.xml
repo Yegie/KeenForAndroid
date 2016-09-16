@@ -60,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:onClick="onCheckboxClicked"
         android:textSize="30sp"
         android:text="@string/mult"
         android:id="@+id/button_mult"

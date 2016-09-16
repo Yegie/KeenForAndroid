@@ -3,9 +3,12 @@ package org.yegie.keenforandroid;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 /**
@@ -37,6 +40,26 @@ public class MenuActivity extends Activity {
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sizeButton.setAdapter(sizeAdapter);
 
+        sizeButton.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String itemSelected = parentView.getItemAtPosition(position).toString();
+                String diffs[] = getResources().getStringArray(R.array.size_list);
+                for (int i = 0; i < diffs.length; ++i) {
+                    if (diffs[i].equals(itemSelected)) {
+                        gameSize = i + 3;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // do nothing
+            }
+
+        });
+
 
         //set up the size button
         Spinner diffButton= (Spinner) findViewById(R.id.button_diff);
@@ -45,8 +68,28 @@ public class MenuActivity extends Activity {
         diffAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         diffButton.setAdapter(diffAdapter);
 
+        diffButton.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String itemSelected = parentView.getItemAtPosition(position).toString();
+                String diffs[] = getResources().getStringArray(R.array.diff_list);
+                for(int i = 0; i < diffs.length; ++i)
+                {
+                    if(diffs[i].equals(itemSelected))
+                    {
+                        gameDiff = i+1;
+                        break;
+                    }
+                }
+            }
 
-        Button multButton=  (Button) findViewById(R.id.button_mult);
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // do nothing
+            }
+
+        });
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,12 +98,22 @@ public class MenuActivity extends Activity {
         });
     }
 
+    public void onCheckboxClicked(View view)
+    {
+        boolean checked = ((CheckBox) view).isChecked();
+        if(checked && view.getId()==R.id.button_mult)
+            gameMult = 1;
+        else
+            gameMult = 0;
+    }
+
     private void startGame() {
         Intent intent=new Intent(this,KeenActivity.class);
         intent.putExtra(GAME_SIZE,gameSize);
         intent.putExtra(GAME_DIFF,gameDiff);
         intent.putExtra(GAME_MULT,gameMult);
         intent.putExtra(GAME_SEED,gameSeed);
+        Log.d("info dump","Size: "+gameSize+" Diff: "+gameDiff+" GameMult: "+gameMult);
         startActivity(intent);
     }
 }
