@@ -21,13 +21,13 @@ public class KeenModelBuilder {
  * fit in the square) and also in solver terms (too many possibilities
  * to iterate over).
  */
-    private static final int MAXBLK = 5;
-
-    private static final int EASY = 1;
-    private static final int NORMAL = 2;
-    private static final int HARD = 3;
-    private static final int EXTREME = 4;
-    private static final int UNREASONABLE = 5;
+//    private static final int MAXBLK = 5;
+//
+//    private static final int EASY = 1;
+//    private static final int NORMAL = 2;
+//    private static final int HARD = 3;
+//    private static final int EXTREME = 4;
+//    private static final int UNREASONABLE = 5;
 
 
 

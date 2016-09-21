@@ -5,15 +5,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import java.util.Random;
-
 public class KeenActivity extends Activity {
     private static final String TAG = "KeenActivity";
 
-    private int size = 4;
-    private int diff = 2;
+    private int size = 3;
+    private int diff = 1;
     private int multOnly = 0;
     private long seed = 10101;
+
+
+    public Bundle getGameData()
+    {
+        Bundle data = new Bundle();
+        data.putInt("size",size);
+        data.putInt("diff",diff);
+        data.putInt("mult",multOnly);
+        data.putLong("seed",seed);
+        return data;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +51,30 @@ public class KeenActivity extends Activity {
         Log.d(TAG,"TODO: Implement undo/redo here");
     }
 
+    private KeenModel gameModel;
+
+    public KeenModel getGameModel()
+    {
+        return gameModel;
+    }
+
+    public void setGameModel(KeenModel a)
+    {
+        gameModel = a;
+    }
+
     public void runGame()
     {
-        KeenModelBuilder builder=new KeenModelBuilder();
+        //KeenModelBuilder builder=new KeenModelBuilder();
 
-        KeenModel gameModel = builder.build(size,diff,multOnly,seed);
+        //KeenModel gameModel = builder.build(size,diff,multOnly,seed);
+
+        Thread gameGenThread = new Thread(new LevelGenMultiThread(this));
+        gameGenThread.start();
+
+        while(gameModel == null){
+            //put some sort of load screen here
+        }
 
         KeenView gameView = new KeenView(this,gameModel);
         KeenController gameController = new KeenController(gameModel,gameView);

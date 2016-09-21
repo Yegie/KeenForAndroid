@@ -20,10 +20,11 @@ public class MenuActivity extends Activity {
     protected static final String GAME_MULT = "gameMultOnly";
     protected static final String GAME_SEED = "gameSeed";
 
-    private int gameSize=5;
-    private int gameDiff=3;
+    private int gameSize=3;
+    private int gameDiff=1;
     private int gameMult=0;
     private long gameSeed=1010101;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class MenuActivity extends Activity {
                 {
                     if(diffs[i].equals(itemSelected))
                     {
-                        gameDiff = i+1;
+                        gameDiff = i;
                         break;
                     }
                 }
@@ -107,7 +108,9 @@ public class MenuActivity extends Activity {
             gameMult = 0;
     }
 
+
     private void startGame() {
+        //gameSeed
         Intent intent=new Intent(this,KeenActivity.class);
         intent.putExtra(GAME_SIZE,gameSize);
         intent.putExtra(GAME_DIFF,gameDiff);
