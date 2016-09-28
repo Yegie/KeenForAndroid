@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 /**
@@ -25,11 +26,17 @@ public class MenuActivity extends Activity {
     private int gameMult=0;
     private long gameSeed=1010101;
 
+    private ProgressBar mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
+        if(mProgress!=null) {
+            mProgress.setVisibility(View.GONE);
+        }
 
         Button startButton= (Button) findViewById(R.id.button_start);
 
@@ -110,7 +117,9 @@ public class MenuActivity extends Activity {
 
 
     private void startGame() {
-        //gameSeed
+        //gameSeed setup
+        gameSeed = System.currentTimeMillis();
+        mProgress.setVisibility(View.VISIBLE);
         Intent intent=new Intent(this,KeenActivity.class);
         intent.putExtra(GAME_SIZE,gameSize);
         intent.putExtra(GAME_DIFF,gameDiff);

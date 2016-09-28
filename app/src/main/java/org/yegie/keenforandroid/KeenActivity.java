@@ -2,8 +2,11 @@ package org.yegie.keenforandroid;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 public class KeenActivity extends Activity {
     private static final String TAG = "KeenActivity";
@@ -13,6 +16,9 @@ public class KeenActivity extends Activity {
     private int multOnly = 0;
     private long seed = 10101;
 
+    private ProgressBar mProgress;
+
+    private Handler mHandler = new Handler();
 
     public Bundle getGameData()
     {
@@ -30,6 +36,7 @@ public class KeenActivity extends Activity {
         setContentView(R.layout.activity_keen);
     //    Toolbar Toolbar = (Toolbar) findViewById(R.id.toolbar);
     //    setSupportActionBar(Toolbar);
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 
         size=getIntent().getExtras().getInt(MenuActivity.GAME_SIZE,0);
         diff=getIntent().getExtras().getInt(MenuActivity.GAME_DIFF,0);
@@ -51,16 +58,16 @@ public class KeenActivity extends Activity {
         Log.d(TAG,"TODO: Implement undo/redo here");
     }
 
-    private KeenModel gameModel;
+    public void runGameModel(KeenModel gameModel) {
+        if(mProgress!=null) {
+            mProgress.setVisibility(View.GONE);
+            mProgress=null;
+        }
 
-    public KeenModel getGameModel()
-    {
-        return gameModel;
-    }
-
-    public void setGameModel(KeenModel a)
-    {
-        gameModel = a;
+        KeenView gameView = new KeenView(this,gameModel);
+        KeenController gameController = new KeenController(gameModel,gameView);
+        ViewGroup container = (ViewGroup) findViewById(R.id.keen_container);
+        container.addView(gameView);
     }
 
     public void runGame()
@@ -69,18 +76,12 @@ public class KeenActivity extends Activity {
 
         //KeenModel gameModel = builder.build(size,diff,multOnly,seed);
 
-        Thread gameGenThread = new Thread(new LevelGenMultiThread(this));
-        gameGenThread.start();
-
-        while(gameModel == null){
-            //put some sort of load screen here
+        if(mProgress!=null) {
+            mProgress.setVisibility(View.VISIBLE);
         }
 
-        KeenView gameView = new KeenView(this,gameModel);
-        KeenController gameController = new KeenController(gameModel,gameView);
-
-        ViewGroup container = (ViewGroup) findViewById(R.id.keen_container);
-        container.addView(gameView);
+        Thread gameGenThread = new Thread(new LevelGenMultiThread(this,mHandler));
+        gameGenThread.start();
     }
 
 

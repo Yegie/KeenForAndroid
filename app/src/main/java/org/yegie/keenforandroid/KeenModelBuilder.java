@@ -446,8 +446,8 @@ public class KeenModelBuilder {
 
         for(int i = 0; i<zoneCount; i++)
         {
-            char sym = levelAsString.charAt(i*5);
-            int val = Integer.parseInt(levelAsString.substring(i*5+1,i*5+4));
+            char sym = levelAsString.charAt(i*6);
+            int val = Integer.parseInt(levelAsString.substring(i*6+1,i*6+5));
             switch(sym)
             {
                 case 'a':
@@ -465,7 +465,7 @@ public class KeenModelBuilder {
             }
         }
 
-        levelAsString = levelAsString.substring(zoneCount*5);
+        levelAsString = levelAsString.substring(zoneCount*6);
 
         class zonePairing
         {

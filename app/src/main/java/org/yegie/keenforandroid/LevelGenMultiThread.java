@@ -1,6 +1,8 @@
 package org.yegie.keenforandroid;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 
 /**
  * Created by Sergey on 9/21/2016.
@@ -8,11 +10,13 @@ import android.os.Bundle;
 public class LevelGenMultiThread implements Runnable {
 
     private KeenActivity gameActivity;
+    private Handler mHandler;
 
-    public LevelGenMultiThread(KeenActivity gameActivity)
+    public LevelGenMultiThread(KeenActivity gameActivity, Handler mHandler)
     {
 
         this.gameActivity = gameActivity;
+        this.mHandler = mHandler;
 
     }
 
@@ -25,9 +29,13 @@ public class LevelGenMultiThread implements Runnable {
         int mult = gameData.getInt("mult");
         long seed = gameData.getLong("seed");
         KeenModelBuilder builder=new KeenModelBuilder();
-        KeenModel gameModel = gameActivity.getGameModel();
-        gameModel = builder.build(size,diff,mult,seed);
-        gameActivity.setGameModel(gameModel);
+        final KeenModel gameModel = builder.build(size,diff,mult,seed);
 
+
+        mHandler.post(new Runnable() {
+            public void run() {
+                gameActivity.runGameModel(gameModel);
+            }
+        });
     }
 }
