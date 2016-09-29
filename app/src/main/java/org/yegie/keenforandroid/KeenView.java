@@ -68,22 +68,24 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
         ThinGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ThinGridPaint.setColor(Color.BLACK);
-        ThinGridPaint.setStrokeWidth(dm.densityDpi/86f);
-
+        ThinGridPaint.setStrokeWidth(dm.densityDpi/8f/(float)size);
 
         TextGridPaint = new Paint(ThinGridPaint);
-        TextGridPaint.setTextSize(dm.densityDpi/12f);
+        //TextGridPaint.setTextSize(dm.densityDpi/12f);
+        TextGridPaint.setTextSize(dm.densityDpi/2.4f/(float)size);
 
         TextGuessPaint = new Paint(ThinGridPaint);
-        TextGuessPaint.setTextSize(dm.densityDpi/4f);
+        //TextGuessPaint.setTextSize(dm.densityDpi/4f);
+        TextGuessPaint.setTextSize(dm.densityDpi/(float)size);
         TextGuessPaint.setTextAlign(Paint.Align.CENTER);
 
         TextGuessSmallPaint = new Paint(ThinGridPaint);
-        TextGuessSmallPaint.setTextSize(dm.densityDpi/10f);
+        //TextGuessSmallPaint.setTextSize(dm.densityDpi/10f);
+        TextGuessSmallPaint.setTextSize(dm.densityDpi/1.9f/(float)size);
         TextGuessSmallPaint.setTextAlign(Paint.Align.CENTER);
 
         ThickGridPaint = new Paint(ThinGridPaint);
-        ThickGridPaint.setStrokeWidth(dm.densityDpi/24f);
+        ThickGridPaint.setStrokeWidth(dm.densityDpi/2.8f/(float)size);
         ThickGridPaint.setStrokeCap(Paint.Cap.ROUND);
 
 
@@ -233,8 +235,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                             int out = (i*3+(j+1));
 
                             if(gameState.getCell(x,y).guesses[out-1]) {
-                                float xPos = gridStartX + ((x + 0.2f * (j - 1)) * gridSize / (float) size) + (gridSize / (float) size / 2);
-                                float yPos = gridStartY + ((y + 0.2f * (i - 1)) * gridSize / (float) size) + (gridSize / (float) size / 2) - ((TextGuessSmallPaint.descent() + TextGuessSmallPaint.ascent()) / 2);
+                                float xPos = gridStartX + ((x + 0.25f * (j - 1)) * gridSize / (float) size) + (gridSize / (float) size / 2);
+                                float yPos = gridStartY + ((y + 0.1f + 0.2f * (i - 1)) * gridSize / (float) size) + (gridSize / (float) size / 2) - ((TextGuessSmallPaint.descent() + TextGuessSmallPaint.ascent()) / 2);
 
                                 canvas.drawText("" + out, xPos, yPos, TextGuessSmallPaint);
                             }
@@ -331,7 +333,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 if(!drawn[index])
                 {
 
-                    canvas.drawText(zones[index].toString(),gridStartX+((float)x+0.08f)/(float)size* gridSize,gridStartY+((float)y+0.2f)/(float)size* gridSize,TextGridPaint);
+                    canvas.drawText(zones[index].toString(),gridStartX+((float)x+0.05f+(float)Math.pow(size*2.5,-1))/(float)size* gridSize,gridStartY+((float)y+0.2f+(float)Math.pow(size*3,-1))/(float)size* gridSize,TextGridPaint);
 
                     drawn[index] = true;
                 }
