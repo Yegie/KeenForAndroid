@@ -25,7 +25,7 @@ public class KeenController implements KeenView.OnGridClickListener {
 
     @Override
     public void onGridClick(int x, int y) {
-        Log.d(TAG,"Grid "+x+","+y+" clicked.");
+        //Log.d(TAG,"Grid "+x+","+y+" clicked.");
 
         if(x == gameModel.getActiveX() && y == gameModel.getActiveY())
         {

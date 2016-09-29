@@ -20,6 +20,7 @@ public class MenuActivity extends Activity {
     protected static final String GAME_DIFF = "gameDiff";
     protected static final String GAME_MULT = "gameMultOnly";
     protected static final String GAME_SEED = "gameSeed";
+    protected static final String PROG_BAR = "progressBar";
 
     private int gameSize=3;
     private int gameDiff=1;
@@ -106,6 +107,12 @@ public class MenuActivity extends Activity {
         });
     }
 
+    public void setMenuActive()
+    {
+        mProgress.setVisibility(View.GONE);
+    }
+
+
     public void onCheckboxClicked(View view)
     {
         boolean checked = ((CheckBox) view).isChecked();
@@ -113,6 +120,16 @@ public class MenuActivity extends Activity {
             gameMult = 1;
         else
             gameMult = 0;
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+
     }
 
 

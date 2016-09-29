@@ -1,6 +1,7 @@
 package org.yegie.keenforandroid;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,8 +16,6 @@ public class KeenActivity extends Activity {
     private int diff = 1;
     private int multOnly = 0;
     private long seed = 10101;
-
-    private ProgressBar mProgress;
 
     private Handler mHandler = new Handler();
 
@@ -36,7 +35,6 @@ public class KeenActivity extends Activity {
         setContentView(R.layout.activity_keen);
     //    Toolbar Toolbar = (Toolbar) findViewById(R.id.toolbar);
     //    setSupportActionBar(Toolbar);
-        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 
         size=getIntent().getExtras().getInt(MenuActivity.GAME_SIZE,0);
         diff=getIntent().getExtras().getInt(MenuActivity.GAME_DIFF,0);
@@ -54,15 +52,15 @@ public class KeenActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        /// super.onBackPressed();
-        Log.d(TAG,"TODO: Implement undo/redo here");
+        //super.onBackPressed();
+
+        Intent intent=new Intent(this,MenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
     }
 
     public void runGameModel(KeenModel gameModel) {
-        if(mProgress!=null) {
-            mProgress.setVisibility(View.GONE);
-            mProgress=null;
-        }
 
         KeenView gameView = new KeenView(this,gameModel);
         KeenController gameController = new KeenController(gameModel,gameView);
@@ -72,13 +70,6 @@ public class KeenActivity extends Activity {
 
     public void runGame()
     {
-        //KeenModelBuilder builder=new KeenModelBuilder();
-
-        //KeenModel gameModel = builder.build(size,diff,multOnly,seed);
-
-        if(mProgress!=null) {
-            mProgress.setVisibility(View.VISIBLE);
-        }
 
         Thread gameGenThread = new Thread(new LevelGenMultiThread(this,mHandler));
         gameGenThread.start();
