@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 public class KeenActivity extends Activity {
-    private static final String TAG = "KeenActivity";
 
     private int size = 3;
     private int diff = 1;
@@ -60,6 +57,7 @@ public class KeenActivity extends Activity {
 
     }
 
+    @SuppressWarnings("unused")//it is used because it does stuff within itself
     public void runGameModel(KeenModel gameModel) {
 
         KeenView gameView = new KeenView(this,gameModel);
