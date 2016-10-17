@@ -35,11 +35,13 @@ public class KeenModel {
 
         Type zoneType;
         int expectedValue;
+        int code;
 
-        public Zone(Type type, int eV)
+        public Zone(Type type, int eV, int code)
         {
             this.zoneType = type;
             this.expectedValue = eV;
+            this.code = code;
         }
         public String toString()
         {

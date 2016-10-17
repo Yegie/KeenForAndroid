@@ -130,7 +130,7 @@ public class MenuActivity extends Activity {
     private void startGame() {
         //gameSeed setup
         gameSeed = System.currentTimeMillis();
-        
+
         mProgress.setVisibility(View.VISIBLE);
         Intent intent=new Intent(this,KeenActivity.class);
         intent.putExtra(GAME_SIZE,gameSize);

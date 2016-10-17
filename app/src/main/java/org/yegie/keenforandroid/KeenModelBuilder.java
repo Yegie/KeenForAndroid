@@ -451,16 +451,16 @@ public class KeenModelBuilder {
             switch(sym)
             {
                 case 'a':
-                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.ADD,val);
+                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.ADD,val,i);
                     break;
                 case 'm':
-                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.TIMES,val);
+                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.TIMES,val,i);
                     break;
                 case 's':
-                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.MINUS,val);
+                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.MINUS,val,i);
                     break;
                 default://divide
-                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.DIVIDE,val);
+                    zones[i] = new KeenModel.Zone(KeenModel.Zone.Type.DIVIDE,val,i);
                     break;
             }
         }

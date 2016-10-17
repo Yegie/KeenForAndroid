@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -315,20 +316,28 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 }
                 if(y!=size-1)
                 {
-                    if(!(curCell.zone == gameState.getCell(x,y+1).zone))
+                    if(!(curCell.zone.code == gameState.getCell(x,y+1).zone.code))
                     {
                         canvas.drawLine(gridStartX+x/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,gridStartX+(x+1)/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,ThickGridPaint);
                     }
                 }
                 if(x!=size-1)
                 {
-                    if(!(curCell.zone == gameState.getCell(x+1,y).zone))
+                    if(!(curCell.zone.code == gameState.getCell(x+1,y).zone.code))
                     {
                         canvas.drawLine(gridStartX+(x+1)/(float)size* gridSize,gridStartY+y/(float)size* gridSize,gridStartX+(x+1)/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,ThickGridPaint);
                     }
                 }
 
-                int index = Arrays.asList(zones).indexOf(curCell.zone);
+                //int index = Arrays.asList(zones).indexOf(curCell.zone);
+                int index = -1;
+                for(int i = 0; i<zones.length && index == -1; ++i)
+                {
+                    if(zones[i].code == curCell.zone.code) index = i;
+                }
+                if(index <0 ){
+                    Log.d("IndexError","someone screwed up");
+                }
 
                 if(!drawn[index])
                 {
