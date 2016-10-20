@@ -1,9 +1,12 @@
 package org.yegie.keenforandroid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
 
@@ -16,8 +19,10 @@ public class KeenActivity extends Activity {
     private int multOnly = 0;
     private long seed = 10101;
     private KeenModel gameModel;
-    private final String SAVE_FILE = "game_save_state";
+    private static final String IS_IN_GAME = "game_was_in_prog";
     private final String SAVE_MODEL = "save_model";
+
+    private SharedPreferences sharedPref;
 
     private Handler mHandler = new Handler();
 
@@ -31,42 +36,33 @@ public class KeenActivity extends Activity {
         return data;
     }
 
-    @Override
-    protected void onPause()
+    public static boolean getGameInProg(Context context)
     {
-        super.onPause();
-
-
-
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(IS_IN_GAME, false);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keen);
-    //    Toolbar Toolbar = (Toolbar) findViewById(R.id.toolbar);
-    //    setSupportActionBar(Toolbar);
+        //    Toolbar Toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //    setSupportActionBar(Toolbar);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-
-        size=getIntent().getExtras().getInt(MenuActivity.GAME_SIZE,0);
-        diff=getIntent().getExtras().getInt(MenuActivity.GAME_DIFF,0);
-        multOnly=getIntent().getExtras().getInt(MenuActivity.GAME_MULT,0);
-        seed=getIntent().getExtras().getLong(MenuActivity.GAME_SEED,0);
-
-        if(size<3 || size>9) {
-            Log.e("KEEN","Got invalid game size, quitting...");
-            setResult(Activity.RESULT_CANCELED);
-            finish();
-        }
-
-        if(savedInstanceState != null)
+        if (!sharedPref.getBoolean(IS_IN_GAME, false))
         {
-            String jsonGameModel = savedInstanceState.getString(SAVE_MODEL);
+            size = getIntent().getExtras().getInt(MenuActivity.GAME_SIZE, 0);
+            diff = getIntent().getExtras().getInt(MenuActivity.GAME_DIFF, 0);
+            multOnly = getIntent().getExtras().getInt(MenuActivity.GAME_MULT, 0);
+            seed = getIntent().getExtras().getLong(MenuActivity.GAME_SEED, 0);
 
-            KeenModel gameModel = new Gson().fromJson(jsonGameModel, KeenModel.class);
-            runGameModel(gameModel);
-        }else {
+            if (size < 3 || size > 9) {
+                Log.e("KEEN", "Got invalid game size, quitting...");
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+            }
+
             runGame();
         }
     }
@@ -75,6 +71,9 @@ public class KeenActivity extends Activity {
     public void onBackPressed() {
         //super.onBackPressed();
 
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(IS_IN_GAME,false);
+        editor.commit();
         Intent intent=new Intent(this,MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -82,10 +81,28 @@ public class KeenActivity extends Activity {
     }
 
     @Override
+    public void onResume()
+    {
+        super.onResume();
+        boolean defaultValue = false;
+        if(sharedPref.getBoolean(IS_IN_GAME, defaultValue))
+        {
+            String jsonGameModel = sharedPref.getString(SAVE_MODEL,"");
+
+            KeenModel gameModel = new Gson().fromJson(jsonGameModel, KeenModel.class);
+            runGameModel(gameModel);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState)
     {
 
-        outState.putString(SAVE_MODEL,new Gson().toJson(gameModel));
+        String modelAsString = new Gson().toJson(gameModel);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(IS_IN_GAME,true);
+        editor.putString(SAVE_MODEL,modelAsString);
+        editor.commit();
 
 
     }

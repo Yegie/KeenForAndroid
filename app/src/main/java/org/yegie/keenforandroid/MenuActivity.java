@@ -1,6 +1,7 @@
 package org.yegie.keenforandroid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,11 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        if(KeenActivity.getGameInProg(getBaseContext())){
+            Intent intent=new Intent(this,KeenActivity.class);
+            startActivity(intent);
+        }
 
         mProgress = (ProgressBar) findViewById(R.id.progress_bar);
         if(mProgress!=null) {
