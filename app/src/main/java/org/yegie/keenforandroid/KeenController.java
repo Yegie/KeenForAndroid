@@ -11,17 +11,24 @@ public class KeenController implements KeenView.OnGridClickListener {
 
     private KeenModel gameModel;
     private KeenView gameView;
+    private KeenActivity parent;
 
-    public KeenController(KeenModel gameModel,KeenView gameView)
+    public KeenController(KeenModel gameModel,KeenView gameView,KeenActivity parent)
     {
 
         this.gameModel = gameModel;
         this.gameView = gameView;
+        this.parent = parent;
 
         gameView.setOnGridClickListener(this);
 
     }
 
+    @Override
+    public void onEndScreenClick()
+    {
+        parent.returnToMainMenu();
+    }
 
     @Override
     public void onGridClick(int x, int y) {

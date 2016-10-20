@@ -67,16 +67,22 @@ public class KeenActivity extends Activity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-
+    public void returnToMainMenu()
+    {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(IS_IN_GAME,false);
         editor.commit();
         Intent intent=new Intent(this,MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        returnToMainMenu();
 
     }
 
@@ -111,7 +117,7 @@ public class KeenActivity extends Activity {
     public void runGameModel(KeenModel gameModel) {
         this.gameModel = gameModel;
         KeenView gameView = new KeenView(this,gameModel);
-        KeenController gameController = new KeenController(gameModel,gameView);
+        KeenController gameController = new KeenController(gameModel,gameView,this);
         ViewGroup container = (ViewGroup) findViewById(R.id.keen_container);
         container.addView(gameView);
     }

@@ -49,6 +49,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
          * @param i    Button number
          */
         void onButtonClicked(int i);
+
+        void onEndScreenClick();
     }
 
     public KeenView(Context context,KeenModel gameState)
@@ -381,7 +383,12 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         float y=motionEvent.getY();
 
         // Calculate x and y into grid x and grid y
-        //
+        
+        if(gameState.getPuzzleWon())
+        {
+            onGridClickListener.onEndScreenClick();
+        }
+        
         if(cordsWithinGrid(x,y)) {
 
             x = x - gridStartX;
