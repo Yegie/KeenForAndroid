@@ -27,7 +27,7 @@ public class KeenController implements KeenView.OnGridClickListener {
     @Override
     public void onEndScreenClick()
     {
-        parent.returnToMainMenu();
+        parent.returnToMainMenu(false);
     }
 
     @Override

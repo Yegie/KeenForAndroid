@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup;
-
 import com.google.gson.Gson;
 
 public class KeenActivity extends Activity {
@@ -17,10 +16,12 @@ public class KeenActivity extends Activity {
     private int size = 3;
     private int diff = 1;
     private int multOnly = 0;
+    private boolean continuing = false;
     private long seed = 10101;
     private KeenModel gameModel;
     private static final String IS_IN_GAME = "game_was_in_prog";
     private final String SAVE_MODEL = "save_model";
+    private static final String CAN_CONT = "can_continue";
 
     private SharedPreferences sharedPref;
 
@@ -42,6 +43,12 @@ public class KeenActivity extends Activity {
         return preferences.getBoolean(IS_IN_GAME, false);
     }
 
+    public static boolean getCanCont(Context context)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(CAN_CONT, false);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +57,15 @@ public class KeenActivity extends Activity {
         //    setSupportActionBar(Toolbar);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if (!sharedPref.getBoolean(IS_IN_GAME, false))
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null) {
+            continuing = extras.getBoolean(MenuActivity.GAME_CONT, false);
+        }
+
+        if (!sharedPref.getBoolean(IS_IN_GAME, false) && !continuing)
         {
+            Log.d("andwnad",""+getIntent().getExtras().getBoolean(MenuActivity.GAME_CONT, false));
             size = getIntent().getExtras().getInt(MenuActivity.GAME_SIZE, 0);
             diff = getIntent().getExtras().getInt(MenuActivity.GAME_DIFF, 0);
             multOnly = getIntent().getExtras().getInt(MenuActivity.GAME_MULT, 0);
@@ -67,10 +81,13 @@ public class KeenActivity extends Activity {
         }
     }
 
-    public void returnToMainMenu()
+    public void returnToMainMenu(boolean canCont)
     {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(IS_IN_GAME,false);
+        String modelAsString = new Gson().toJson(gameModel);
+        editor.putBoolean(CAN_CONT,canCont);
+        editor.putString(SAVE_MODEL,modelAsString);
         editor.commit();
         Intent intent=new Intent(this,MenuActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -82,7 +99,7 @@ public class KeenActivity extends Activity {
     public void onBackPressed() {
         //super.onBackPressed();
 
-        returnToMainMenu();
+        returnToMainMenu(true);
 
     }
 
@@ -91,7 +108,7 @@ public class KeenActivity extends Activity {
     {
         super.onResume();
         boolean defaultValue = false;
-        if(sharedPref.getBoolean(IS_IN_GAME, defaultValue))
+        if(sharedPref.getBoolean(IS_IN_GAME, defaultValue) || continuing)
         {
             String jsonGameModel = sharedPref.getString(SAVE_MODEL,"");
 
@@ -108,6 +125,7 @@ public class KeenActivity extends Activity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(IS_IN_GAME,true);
         editor.putString(SAVE_MODEL,modelAsString);
+        editor.putBoolean(CAN_CONT,true);
         editor.commit();
 
 

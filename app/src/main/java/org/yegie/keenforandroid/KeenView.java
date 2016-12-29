@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class KeenView extends View implements GestureDetector.OnGestureListener {
 
     private final float PADDING = 0.01f;
+    private final float PADDING_GRID = 0.03f;
     private Paint ThinGridPaint;
     private Paint ThickGridPaint;
     private Paint ActiveGridPaint;
@@ -115,15 +116,15 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
             if(h>w)
             {
-                gridStartX = w-w*(1-PADDING);
-                gridEndX   = w-w*PADDING;
+                gridStartX = w-w*(1-PADDING_GRID);
+                gridEndX   = w-w*PADDING_GRID;
                 gridStartY = gridStartX;
                 gridEndY   = gridStartY + (gridEndX-gridStartX);
             }
             else
             {
-                gridStartX = h-h*(1-PADDING);
-                gridEndX   = h-h*PADDING;
+                gridStartX = h-h*(1-PADDING_GRID);
+                gridEndX   = h-h*PADDING_GRID;
                 gridStartY = gridStartX;
                 gridEndY   = gridStartY + (gridEndX-gridStartX);
             }
@@ -413,9 +414,6 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 y /= buttonSize+(PADDING*screenHeight);
                 num = (int) y+1;
             }
-
-
-
 
             if (onGridClickListener != null)
                 onGridClickListener.onButtonClicked(num);

@@ -21,6 +21,7 @@ public class MenuActivity extends Activity {
     protected static final String GAME_DIFF = "gameDiff";
     protected static final String GAME_MULT = "gameMultOnly";
     protected static final String GAME_SEED = "gameSeed";
+    protected static final String GAME_CONT = "contPrev";
 
     private int gameSize=3;
     private int gameDiff=1;
@@ -33,9 +34,9 @@ public class MenuActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        final Intent intent=new Intent(this,KeenActivity.class);
 
         if(KeenActivity.getGameInProg(getBaseContext())){
-            Intent intent=new Intent(this,KeenActivity.class);
             startActivity(intent);
         }
 
@@ -45,6 +46,10 @@ public class MenuActivity extends Activity {
         }
 
         Button startButton= (Button) findViewById(R.id.button_start);
+        Button contButton= (Button) findViewById(R.id.button_cont);
+        if(KeenActivity.getCanCont(getBaseContext())){
+            contButton.setVisibility(View.VISIBLE);
+        }
 
         //set up the size button
         Spinner sizeButton= (Spinner) findViewById(R.id.button_size);
@@ -108,6 +113,14 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 MenuActivity.this.startGame();
+            }
+        });
+
+        contButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent.putExtra(GAME_CONT,true);
+                startActivity(intent);
             }
         });
     }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Keen for Android</string>
     <string name="title">Keen</string>
+    <string name="cont">Continue Previous Level</string>
     <string name="play">Play Level</string>
     <string name="diff">Difficulty</string>
     <string name="size">Size</string>

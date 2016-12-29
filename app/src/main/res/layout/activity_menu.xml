@@ -29,10 +29,13 @@
         android:layout_margin="16dp"
         />
 
+
     <Button
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:textSize="25sp"
@@ -49,6 +52,7 @@
         android:id="@+id/button_size"
         android:textSize="25sp"
         android:layout_gravity="center_horizontal" />
+
 
     <Spinner
         android:layout_width="match_parent"
@@ -72,4 +76,17 @@
         android:text="@string/mult"
         android:id="@+id/button_mult"
         android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:id="@+id/button_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:visibility="invisible"
+        android:textSize="25sp"
+        android:text="@string/cont"/>
+
 </LinearLayout>
