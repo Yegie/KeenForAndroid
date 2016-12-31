@@ -34,6 +34,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
     private float screenWidth, screenHeight;
     private float gridStartX, gridEndX, gridStartY, gridEndY, gridSize;
     private float buttonStartX, buttonEndX, buttonStartY, buttonEndY, buttonPanelWidth, buttonPanelHeight, buttonSize;
+    private float buttonUndoStartX, buttonUndoStartY,buttonUndoEndX,buttonUndoEndY,buttonUndoPanelHeight,buttonUndoPanelWidth;
 
     /** Interface for passing grid touches to the controller
      */
@@ -50,6 +51,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
          * @param i    Button number
          */
         void onButtonClicked(int i);
+
+        void onUndoButtonClick();
 
         void onEndScreenClick();
     }
@@ -135,19 +138,30 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 buttonStartY      = gridSize +3*PADDING*w+w*0.05f;
                 buttonStartX      = w-w*(1-PADDING);
                 buttonEndX        = w-w*PADDING;
+                buttonUndoStartX  = w/8;
+                buttonUndoEndX    = w*7/8;
                 buttonPanelWidth  = buttonEndX-buttonStartX;
                 buttonSize        = (buttonPanelWidth - w*PADDING*(size-1))/(float) size;
-                buttonEndY        = buttonStartY + buttonSize/1.2f;
+                buttonEndY        = buttonStartY + buttonSize/1.4f;
+                buttonUndoStartY  = buttonEndY + 3*PADDING*w;
                 buttonPanelHeight = buttonEndY - buttonStartY;
+                buttonUndoEndY    = buttonUndoStartY + buttonSize/1.4f;
+                buttonUndoPanelHeight = buttonUndoEndY - buttonUndoStartY;
+                buttonUndoPanelWidth  = buttonUndoEndX-buttonUndoStartX;
             } else
             {
                 buttonStartX      = gridSize +3*PADDING*h+h*0.05f;
-                buttonStartY      = h-h*(1-PADDING);
-                buttonEndY        = h-h*PADDING;
+                buttonStartY = buttonUndoStartY = h-h*(1-PADDING);
+                buttonEndY   = buttonUndoEndY   = h-h*PADDING;
                 buttonPanelHeight  = buttonEndY-buttonStartY;
                 buttonSize        = (buttonPanelHeight - h*PADDING*(size-1))/(float) size;
                 buttonEndX        = buttonStartX + buttonSize/1.2f;
+                buttonUndoStartX  = buttonEndX + 3*PADDING*w;
                 buttonPanelWidth = buttonEndX - buttonStartX;
+                buttonUndoEndX    = buttonUndoStartX + buttonPanelWidth;
+                buttonUndoPanelHeight  = buttonUndoEndY-buttonUndoStartY;
+                buttonUndoPanelWidth = buttonUndoEndX - buttonUndoStartX;
+
             }
 
         }
@@ -198,15 +212,23 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
             drawGuess(canvas);
 
+            canvas.drawRect(buttonUndoStartX,buttonUndoStartY,buttonUndoEndX,buttonUndoEndY,ThinGridPaint);
+
+            float xPos = buttonUndoStartX+(buttonUndoPanelWidth/2);
+            float yPos = buttonUndoStartY+(buttonUndoPanelHeight / 2) - ((TextGuessPaint.descent() + TextGuessPaint.ascent()) / 2);
+            canvas.drawText("undo",xPos,yPos,TextGuessPaint);
+
+
         }
 
     }
 
+
     private void drawGuess(Canvas canvas) {
 
-        for(int y = 0; y < size; y++)
+        for(short y = 0; y < size; y++)
         {
-            for(int x = 0; x < size; x++)
+            for(short x = 0; x < size; x++)
             {
 
                 KeenModel.GridCell curCell = gameState.getCell(x,y);
@@ -253,8 +275,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         }
     }
 
-    private boolean isValidGuess(int x, int y) {
-        for(int i = 0; i < size; i++)
+    private boolean isValidGuess(short x, short y) {
+        for(short i = 0; i < size; i++)
         {
             if(i != x && gameState.getCell(i,y).finalGuessValue == gameState.getCell(x,y).finalGuessValue)
             {
@@ -303,9 +325,9 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         KeenModel.Zone[] zones = gameState.getGameZones();
         boolean[] drawn = new boolean[zones.length];
 
-        for(int y = 0; y < size; y++)
+        for(short y = 0; y < size; y++)
         {
-            for(int x = 0; x < size; x++)
+            for(short x = 0; x < size; x++)
             {
                 KeenModel.GridCell curCell = gameState.getCell(x,y);
 
@@ -319,14 +341,14 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 }
                 if(y!=size-1)
                 {
-                    if(!(curCell.zone.code == gameState.getCell(x,y+1).zone.code))
+                    if(!(curCell.zone.code == gameState.getCell(x,(short)(y+1)).zone.code))
                     {
                         canvas.drawLine(gridStartX+x/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,gridStartX+(x+1)/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,ThickGridPaint);
                     }
                 }
                 if(x!=size-1)
                 {
-                    if(!(curCell.zone.code == gameState.getCell(x+1,y).zone.code))
+                    if(!(curCell.zone.code == gameState.getCell((short)(x+1),y).zone.code))
                     {
                         canvas.drawLine(gridStartX+(x+1)/(float)size* gridSize,gridStartY+y/(float)size* gridSize,gridStartX+(x+1)/(float)size* gridSize,gridStartY+(y+1)/(float)size* gridSize,ThickGridPaint);
                     }
@@ -417,12 +439,23 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
             if (onGridClickListener != null)
                 onGridClickListener.onButtonClicked(num);
-        }
-        else {
+        }else if(cordsAreUndo(x,y)) {
+            onGridClickListener.onUndoButtonClick();
+        } else {
             if (onGridClickListener != null)
                 onGridClickListener.onGridClick(-1, -1);
         }
 
+
+        return true;
+    }
+
+    private boolean cordsAreUndo(float x, float y) {
+
+        if(x>buttonUndoEndX || x<buttonUndoStartX)
+            return false;
+        if(y>buttonUndoEndY || y<buttonUndoStartY)
+            return false;
 
         return true;
     }

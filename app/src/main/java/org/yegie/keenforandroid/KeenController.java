@@ -40,8 +40,8 @@ public class KeenController implements KeenView.OnGridClickListener {
             gameModel.toggleFinalGuess();
         } else
         {
-            gameModel.setActiveX(x);
-            gameModel.setActiveY(y);
+            gameModel.setActiveX((short) x);
+            gameModel.setActiveY((short) y);
         }
 
         gameView.invalidate();
@@ -50,11 +50,12 @@ public class KeenController implements KeenView.OnGridClickListener {
     @Override
     public void onButtonClicked(int i) {
         Log.d(TAG,"Button "+i+" clicked.");
-        int x = gameModel.getActiveX();
-        int y = gameModel.getActiveY();
+        short x = gameModel.getActiveX();
+        short y = gameModel.getActiveY();
 
         if(x != -1 && y != -1)
         {
+            gameModel.addCurToUndo(x,y);
             if(gameModel.getFinalGuess())
             {
                 gameModel.clearGuesses(x,y);
@@ -71,5 +72,11 @@ public class KeenController implements KeenView.OnGridClickListener {
 
         gameView.invalidate();
 
+    }
+
+    @Override
+    public void onUndoButtonClick() {
+        gameModel.undoOneStep();
+        gameView.invalidate();
     }
 }

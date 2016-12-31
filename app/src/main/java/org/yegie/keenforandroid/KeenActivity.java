@@ -65,7 +65,6 @@ public class KeenActivity extends Activity {
 
         if (!sharedPref.getBoolean(IS_IN_GAME, false) && !continuing)
         {
-            Log.d("andwnad",""+getIntent().getExtras().getBoolean(MenuActivity.GAME_CONT, false));
             size = getIntent().getExtras().getInt(MenuActivity.GAME_SIZE, 0);
             diff = getIntent().getExtras().getInt(MenuActivity.GAME_DIFF, 0);
             multOnly = getIntent().getExtras().getInt(MenuActivity.GAME_MULT, 0);

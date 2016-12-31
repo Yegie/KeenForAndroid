@@ -1,5 +1,9 @@
 package org.yegie.keenforandroid;
 
+import android.util.Log;
+
+import java.util.Stack;
+
 /**
  * Created by Sergey on 5/19/2016.
  */
@@ -66,15 +70,31 @@ public class KeenModel {
         }
     }
 
-    private final GridCell[][] gameGrid;
+    static public class CellState{
+        /**
+         * state pos 0: 0 = not final 1 = final
+         * state pos 1-9: 0 = false 1 = true
+         */
+        short state;
+        short x,y;
 
+        public CellState(short state, short x, short y){
+            this.state = state;
+            this.x = x;
+            this.y = y;
+        }
+
+    }
+
+    private final GridCell[][] gameGrid;
+    private Stack<CellState> undo;
     private final Zone[] gameZones;
 
 
     private boolean finalGuess;
     private boolean puzzleWonVal;
-    private int activeX;
-    private int activeY;
+    private short activeX;
+    private short activeY;
     private int size;
 
     /**
@@ -84,6 +104,7 @@ public class KeenModel {
     {
         this.size = size;
         this.gameGrid = grid;
+        this.undo = new Stack<>();
         this.gameZones = zones;
         this.finalGuess = true;
         this.puzzleWonVal = false;
@@ -94,23 +115,62 @@ public class KeenModel {
     /**
      * getter for the xy cords of the currently selected spot.
      */
-    public int getActiveY(){return activeY;}
-    public int getActiveX(){return activeX;}
+    public short getActiveY(){return activeY;}
+    public short getActiveX(){return activeX;}
 
-    public void setActiveX(int activeX) {
+    public void setActiveX(short activeX) {
         this.activeX = activeX;
     }
-    public void setActiveY(int activeY) {
+    public void setActiveY(short activeY) {
         this.activeY = activeY;
     }
 
-    public void clearGuesses(int x, int y){
+    public void addCurToUndo(short x, short y){
+        short state = 1;
+        GridCell curCell = gameGrid[x][y];
+        if(curCell.finalGuessValue == -1) {
+            state = 0;
+            for (int i = 1; i <= curCell.guesses.length; ++i) {
+                if (curCell.guesses[i - 1]) {
+                    state |= 1 << i;
+                }
+            }
+        } else {
+            state |= 1<<curCell.finalGuessValue;
+        }
+        CellState val = new CellState(state,x,y);
+
+        undo.push(val);
+    }
+
+    public void undoOneStep(){
+        if(!undo.empty()) {
+            CellState oldCell = undo.pop();
+            short x = oldCell.x;
+            short y = oldCell.y;
+            GridCell cellToUpdate = gameGrid[x][y];
+            boolean finalGuess = ((oldCell.state & 1) != 0);
+            clearFinal(x,y);
+            clearGuesses(x,y);
+            for (int i = 1; i <= cellToUpdate.guesses.length; ++i) {
+                if ((oldCell.state & 1 << i) != 0) {
+                    if (finalGuess) {
+                        cellToUpdate.finalGuessValue = i;
+                    } else {
+                        cellToUpdate.guesses[i - 1] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public void clearGuesses(short x, short y){
         gameGrid[x][y].guesses = new boolean[MAX_SIZE];
     }
-    public void clearFinal(int x, int y){
+    public void clearFinal(short x, short y){
         gameGrid[x][y].finalGuessValue = -1;
     }
-    public void setCellFinalGuess(int x, int y, int guess){
+    public void setCellFinalGuess(short x, short y, int guess){
         if(gameGrid[x][y].finalGuessValue == guess)
         {
             gameGrid[x][y].finalGuessValue = -1;
@@ -138,11 +198,11 @@ public class KeenModel {
         return puzzleWonVal;
     }
 
-    public void addToCellGuesses(int x, int y, int guess){
+    public void addToCellGuesses(short x, short y, int guess){
         gameGrid[x][y].guesses[guess-1] = !gameGrid[x][y].guesses[guess-1];
     }
 
-    public GridCell getCell(int x, int y)
+    public GridCell getCell(short x, short y)
     {
         return gameGrid[x][y];
     }
