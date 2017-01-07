@@ -288,8 +288,9 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
     }
 
     //helper method used to determine whether the current number is valid
-    //in a latin square (note: not necessarily a correct number)
     private boolean isValidGuess(short x, short y) {
+
+        //in a latin square (note: not necessarily a correct number)
         for(short i = 0; i < size; i++)
         {
             if(i != x && gameState.getCell(i,y).finalGuessValue == gameState.getCell(x,y).finalGuessValue)
@@ -301,7 +302,63 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
                 return false;
             }
         }
-        return true;
+
+        //checking if the current region satisfies the clue
+        KeenModel.Zone curZone = gameState.getCell(x,y).zone;
+        int curZoneCode = curZone.code;
+        KeenModel.Zone.Type type = curZone.zoneType;
+        int result = gameState.getCell(x,y).finalGuessValue;
+
+        for(short ix = 0; ix < size; ++ix)
+        {
+            for (short iy = 0; iy < size; ++iy)
+            {
+                KeenModel.GridCell cell = gameState.getCell(ix,iy);
+
+                if(curZoneCode == cell.zone.code)
+                {
+                    if(cell.finalGuessValue == -1)
+                    {
+                        //this works because if any cell in the current zone is missing a final
+                        //guess we don't want to highlight incorrect results
+                        return true;
+                    }
+
+                    //current cell value is already in "result"
+                    if(ix == x && iy == y)
+                        continue;
+
+                    switch (type) {
+                        case ADD:
+                            result += cell.finalGuessValue;
+                            break;
+                        case MINUS:
+                            if (result > cell.finalGuessValue)
+                                result -= cell.finalGuessValue;
+                            else
+                                result = cell.finalGuessValue - result;
+                            break;
+                        case TIMES:
+                            result *= cell.finalGuessValue;
+                            break;
+                        case DIVIDE:
+                            if (result > cell.finalGuessValue) {
+                                if (result % cell.finalGuessValue != 0)
+                                    return false;
+                                result /= cell.finalGuessValue;
+                            }
+                            else {
+                                if (cell.finalGuessValue % result != 0)
+                                    return false;
+                                result = cell.finalGuessValue / result;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        return result == curZone.expectedValue;
     }
 
     //could be contained in the on draw, just separated for organizational purposes

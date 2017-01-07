@@ -137,16 +137,17 @@ public class MenuActivity extends Activity {
         super.onResume();
 
         boolean canCont=sharedPref.getBoolean(KeenActivity.CAN_CONT,false);
-
         contButton.setVisibility(canCont ? View.VISIBLE : View.GONE);
-        diffButton.setSelection(sharedPref.getInt(MENU_DIFF,0));
-        gameDiff = sharedPref.getInt(MENU_DIFF,0);
-        sizeButton.setSelection(sharedPref.getInt(MENU_SIZE,0));
-        gameSize = sharedPref.getInt(MENU_SIZE+3,3);
 
-        CheckBox ckbox= (CheckBox) findViewById(R.id.button_mult);
-        ckbox.setChecked(sharedPref.getBoolean(MENU_MULT,false));
+        gameDiff = sharedPref.getInt(MENU_DIFF,0);
+        diffButton.setSelection(gameDiff);
+
+        gameSize = sharedPref.getInt(MENU_SIZE,3);
+        sizeButton.setSelection(gameSize-3);
+
         gameMult = sharedPref.getBoolean(MENU_MULT,false) ? 1 : 0;
+        CheckBox ckbox= (CheckBox) findViewById(R.id.button_mult);
+        ckbox.setChecked(gameMult!=0);
     }
 
     //save the current menu selections to be restored at a later point
@@ -156,7 +157,7 @@ public class MenuActivity extends Activity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(MENU_MULT,gameMult!=0);
         editor.putInt(MENU_DIFF,gameDiff);
-        editor.putInt(MENU_SIZE,gameSize-3);
+        editor.putInt(MENU_SIZE,gameSize);
         editor.apply();
     }
 

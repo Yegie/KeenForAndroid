@@ -36,7 +36,7 @@ public class KeenModel {
         enum Type
         {
             ADD,MINUS,TIMES,DIVIDE
-        };
+        }
 
         Type zoneType;
         int expectedValue;
