@@ -180,6 +180,10 @@ public class KeenModel {
     public void puzzleWon()
     {
         puzzleWonVal = setPuzzleWon();
+        if(puzzleWonVal) {
+            activeX = -1;
+            activeY = -1;
+        }
     }
     private boolean setPuzzleWon()
     {

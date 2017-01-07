@@ -182,54 +182,50 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if(hasActiveCords())
+        {
+            int X = gameState.getActiveX();
+            int Y = gameState.getActiveY();
+
+            if(gameState.getFinalGuess())
+            {
+                canvas.drawRect(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize,gridStartX+(X+1)/(float)size* gridSize,gridStartY+(Y+1)/(float)size* gridSize,ActiveGridPaint);
+            }else
+            {
+                Path points = new Path();
+                points.moveTo(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
+                points.lineTo(gridStartX+((float)X+0.4f)/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
+                points.lineTo(gridStartX+X/(float)size* gridSize,gridStartY+((float)Y+0.4f)/(float)size* gridSize);
+                points.close();
+
+                canvas.drawPath(points,ActiveGridPaint);
+            }
+
+        }
+        for(int i = 0; i < size; i++)
+            canvas.drawLine(gridStartX,gridStartY+i/(float)size* gridSize,gridEndX,gridStartY+i/(float)size* gridSize,ThinGridPaint);
+        for(int i = 0; i < size; i++)
+            canvas.drawLine(gridStartX+i/(float)size* gridSize,gridStartY,gridStartX+i/(float)size* gridSize,gridEndY,ThinGridPaint);
+
+        drawZoneBordersAndLabels(canvas);
+
+        drawGuess(canvas);
+
         if(gameState.getPuzzleWon())
         {
-            TextGuessPaint.setColor(Color.argb(255, 100, 100, 100));
-            canvas.drawRect(0,0,screenWidth,screenHeight,TextGuessPaint);
             TextGuessPaint.setColor(Color.WHITE);
-            canvas.drawText("You Win",screenWidth/2,screenHeight/2,TextGuessPaint);
+            canvas.drawRect(buttonStartX+2,buttonStartY+2,buttonEndX-2,buttonUndoEndY-2,TextGuessPaint);
+            canvas.drawRect(buttonStartX+2,buttonStartY+2,buttonEndX-2,buttonUndoEndY-2,ThinGridPaint);
             TextGuessPaint.setColor(Color.BLACK);
-        } else
-        {
-
-            if(hasActiveCords())
-            {
-                int X = gameState.getActiveX();
-                int Y = gameState.getActiveY();
-
-                if(gameState.getFinalGuess())
-                {
-                    canvas.drawRect(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize,gridStartX+(X+1)/(float)size* gridSize,gridStartY+(Y+1)/(float)size* gridSize,ActiveGridPaint);
-                }else
-                {
-                    Path points = new Path();
-                    points.moveTo(gridStartX+X/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
-                    points.lineTo(gridStartX+((float)X+0.4f)/(float)size* gridSize,gridStartY+Y/(float)size* gridSize);
-                    points.lineTo(gridStartX+X/(float)size* gridSize,gridStartY+((float)Y+0.4f)/(float)size* gridSize);
-                    points.close();
-
-                    canvas.drawPath(points,ActiveGridPaint);
-                }
-
-            }
-            for(int i = 0; i < size; i++)
-                canvas.drawLine(gridStartX,gridStartY+i/(float)size* gridSize,gridEndX,gridStartY+i/(float)size* gridSize,ThinGridPaint);
-            for(int i = 0; i < size; i++)
-                canvas.drawLine(gridStartX+i/(float)size* gridSize,gridStartY,gridStartX+i/(float)size* gridSize,gridEndY,ThinGridPaint);
-
-            drawZoneBordersAndLabels(canvas);
-
+            canvas.drawText("You Won",screenWidth/2,buttonStartY+(buttonPanelHeight+buttonUndoPanelHeight)/2f - ((TextGuessPaint.descent() + TextGuessPaint.ascent()) / 2),TextGuessPaint);
+        } else {
             drawButtonPanel(canvas);
-
-            drawGuess(canvas);
 
             canvas.drawRect(buttonUndoStartX,buttonUndoStartY,buttonUndoEndX,buttonUndoEndY,ThinGridPaint);
 
             float xPos = buttonUndoStartX+(buttonUndoPanelWidth/2);
             float yPos = buttonUndoStartY+(buttonUndoPanelHeight / 2) - ((TextGuessPaint.descent() + TextGuessPaint.ascent()) / 2);
             canvas.drawText("undo",xPos,yPos,TextGuessPaint);
-
-
         }
 
     }
@@ -482,42 +478,40 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         if(gameState.getPuzzleWon())
         {
             onGridClickListener.onEndScreenClick();
-        }
-        
-        if(cordsWithinGrid(x,y)) {
+        }else {
 
-            x = x - gridStartX;
-            y = y - gridStartY;
+            if (cordsWithinGrid(x, y)) {
 
-            int gridX = (int)(size*x/ gridSize);
-            int gridY = (int)(size*y/ gridSize);
+                x = x - gridStartX;
+                y = y - gridStartY;
 
-            if (onGridClickListener != null)
-                onGridClickListener.onGridClick(gridX, gridY);
-        }
-        else if(cordsAreNumbers(x,y))
-        {
-            int num;
-            if(screenHeight>screenWidth){
-                x -= buttonStartX;
-                x /= buttonSize+(PADDING*screenWidth);
-                num = (int) x+1;
-            }else
-            {
-                y -= buttonStartY;
-                y /= buttonSize+(PADDING*screenHeight);
-                num = (int) y+1;
+                int gridX = (int) (size * x / gridSize);
+                int gridY = (int) (size * y / gridSize);
+
+                if (onGridClickListener != null)
+                    onGridClickListener.onGridClick(gridX, gridY);
+            } else if (cordsAreNumbers(x, y)) {
+                int num;
+                if (screenHeight > screenWidth) {
+                    x -= buttonStartX;
+                    x /= buttonSize + (PADDING * screenWidth);
+                    num = (int) x + 1;
+                } else {
+                    y -= buttonStartY;
+                    y /= buttonSize + (PADDING * screenHeight);
+                    num = (int) y + 1;
+                }
+
+                if (onGridClickListener != null)
+                    onGridClickListener.onButtonClicked(num);
+            } else if (cordsAreUndo(x, y)) {
+                onGridClickListener.onUndoButtonClick();
+            } else {
+                if (onGridClickListener != null)
+                    onGridClickListener.onGridClick(-1, -1);
             }
 
-            if (onGridClickListener != null)
-                onGridClickListener.onButtonClicked(num);
-        }else if(cordsAreUndo(x,y)) {
-            onGridClickListener.onUndoButtonClick();
-        } else {
-            if (onGridClickListener != null)
-                onGridClickListener.onGridClick(-1, -1);
         }
-
 
         return true;
     }
