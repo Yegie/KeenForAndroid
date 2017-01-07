@@ -3,7 +3,9 @@ package org.yegie.keenforandroid;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,42 +19,45 @@ import android.widget.Spinner;
  * Created by Sergey on 7/17/2016.
  */
 public class MenuActivity extends Activity {
+    //names by which to read from saved prefs
     protected static final String GAME_SIZE = "gameSize";
     protected static final String GAME_DIFF = "gameDiff";
     protected static final String GAME_MULT = "gameMultOnly";
     protected static final String GAME_SEED = "gameSeed";
     protected static final String GAME_CONT = "contPrev";
+    protected static final String MENU_SIZE = "menuSize";
+    protected static final String MENU_DIFF = "menuDiff";
+    protected static final String MENU_MULT = "menuMult";
 
+    //default values for game launch
     private int gameSize=3;
     private int gameDiff=1;
     private int gameMult=0;
     private long gameSeed=1010101;
 
-    private ProgressBar mProgress;
+    //pref file stored between games
+    private SharedPreferences sharedPref;
 
+    //the buttons that are created in onCreate
+    private Button contButton;
+    private Button startButton;
+    private Spinner sizeButton;
+    private Spinner diffButton;
+
+    // initialize all the buttons and
+    // create and assign listeners for all the buttons and spinners
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        final Intent intent=new Intent(this,KeenActivity.class);
 
-        if(KeenActivity.getGameInProg(getBaseContext())){
-            startActivity(intent);
-        }
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
-        if(mProgress!=null) {
-            mProgress.setVisibility(View.GONE);
-        }
-
-        Button startButton= (Button) findViewById(R.id.button_start);
-        Button contButton= (Button) findViewById(R.id.button_cont);
-        if(KeenActivity.getCanCont(getBaseContext())){
-            contButton.setVisibility(View.VISIBLE);
-        }
+        startButton = (Button) findViewById(R.id.button_start);
+        contButton = (Button) findViewById(R.id.button_cont);
 
         //set up the size button
-        Spinner sizeButton= (Spinner) findViewById(R.id.button_size);
+        sizeButton= (Spinner) findViewById(R.id.button_size);
 
         ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.size_list, R.layout.menu_spinner_layout);
@@ -80,8 +85,8 @@ public class MenuActivity extends Activity {
         });
 
 
-        //set up the size button
-        Spinner diffButton= (Spinner) findViewById(R.id.button_diff);
+        //set up the diff button
+        diffButton= (Spinner) findViewById(R.id.button_diff);
         ArrayAdapter<CharSequence> diffAdapter = ArrayAdapter.createFromResource(this,
                 R.array.diff_list, R.layout.menu_spinner_layout);
         diffAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -119,13 +124,43 @@ public class MenuActivity extends Activity {
         contButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Intent intent=new Intent(MenuActivity.this,KeenActivity.class);
                 intent.putExtra(GAME_CONT,true);
                 startActivity(intent);
             }
         });
     }
 
+    //restore the menu selections from the saved prefs file
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        boolean canCont=sharedPref.getBoolean(KeenActivity.CAN_CONT,false);
+
+        contButton.setVisibility(canCont ? View.VISIBLE : View.GONE);
+        diffButton.setSelection(sharedPref.getInt(MENU_DIFF,0));
+        gameDiff = sharedPref.getInt(MENU_DIFF,0);
+        sizeButton.setSelection(sharedPref.getInt(MENU_SIZE,0));
+        gameSize = sharedPref.getInt(MENU_SIZE+3,3);
+
+        CheckBox ckbox= (CheckBox) findViewById(R.id.button_mult);
+        ckbox.setChecked(sharedPref.getBoolean(MENU_MULT,false));
+        gameMult = sharedPref.getBoolean(MENU_MULT,false) ? 1 : 0;
+    }
+
+    //save the current menu selections to be restored at a later point
+    @Override
+    public void onPause(){
+        super.onPause();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(MENU_MULT,gameMult!=0);
+        editor.putInt(MENU_DIFF,gameDiff);
+        editor.putInt(MENU_SIZE,gameSize-3);
+        editor.apply();
+    }
+
+    //handler and listener for checkbox clicks (mult only button)
     public void onCheckboxClicked(View view)
     {
         boolean checked = ((CheckBox) view).isChecked();
@@ -135,28 +170,16 @@ public class MenuActivity extends Activity {
             gameMult = 0;
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.addCategory( Intent.CATEGORY_HOME );
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(homeIntent);
-
-    }
-
-
+    //start the game activity with the correct parameters
     private void startGame() {
         //gameSeed setup
         gameSeed = System.currentTimeMillis();
-
-        mProgress.setVisibility(View.VISIBLE);
         Intent intent=new Intent(this,KeenActivity.class);
+        intent.putExtra(GAME_CONT, false);
         intent.putExtra(GAME_SIZE,gameSize);
         intent.putExtra(GAME_DIFF,gameDiff);
         intent.putExtra(GAME_MULT,gameMult);
         intent.putExtra(GAME_SEED,gameSeed);
-        Log.d("info dump","Size: "+gameSize+" Diff: "+gameDiff+" GameMult: "+gameMult);
         startActivity(intent);
     }
 }

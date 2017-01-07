@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.os.SystemClock;
 
 /**
+ * Handles multithreading of level generation to prevent
+ * frame drops in the ui thread
+ *
  * Created by Sergey on 9/21/2016.
  */
 public class LevelGenMultiThread implements Runnable {
@@ -12,6 +15,7 @@ public class LevelGenMultiThread implements Runnable {
     private KeenActivity gameActivity;
     private Handler mHandler;
 
+    //constructor sets up parent and multithread handler
     public LevelGenMultiThread(KeenActivity gameActivity, Handler mHandler)
     {
 
@@ -20,6 +24,8 @@ public class LevelGenMultiThread implements Runnable {
 
     }
 
+    //creates a game model, and when it is done runs a method on the
+    //gameActivity that tells it to start the game
     @Override
     public void run() {
 

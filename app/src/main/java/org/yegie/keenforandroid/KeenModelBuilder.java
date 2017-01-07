@@ -2,7 +2,6 @@ package org.yegie.keenforandroid;
 
 import android.nfc.Tag;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
@@ -11,6 +10,9 @@ import java.util.Random;
 
 
 /**
+ * This contains a large commented out section which is a large part of the level gen
+ * made in java, the level gen is currently done through an NDK used below the commented text.
+ *
  * Created by Sergey on 5/25/2016.
  */
 public class KeenModelBuilder {
@@ -414,6 +416,8 @@ public class KeenModelBuilder {
 //
 //    }
 
+    //instead of rewriting the library in java this uses an NDK to access a modified version
+    //of the library in C and then creates a KeenModel based off of it.
     public KeenModel build(int size, int diff, int multOnlt, long seed)
     {
 
@@ -517,7 +521,7 @@ public class KeenModelBuilder {
             int x = i/size;
             int y = i%size;
 
-            cells[x][y] = new KeenModel.GridCell(size,val,zones[zoneIndex]);
+            cells[x][y] = new KeenModel.GridCell(val,zones[zoneIndex]);
 
         }
 
@@ -532,55 +536,5 @@ public class KeenModelBuilder {
     @SuppressWarnings("JniMissingFunction") //it exists, studio just does not recognize it...
     public native String getLevelFromC(int i, int size, int diff, long seed);
 
-
-    // This will create a test map of 4x4 with a preset solvable layout.
-//    public KeenModel build(int size) {
-//
-//
-//        if(size != 4) {
-//            Log.e("KeenModelBuilder", "Size must be 4 for test cases");
-//            size = 4;
-//        }
-//
-//        KeenModel.Zone[] zones={
-//            new KeenModel.Zone(KeenModel.Zone.Type.DIVIDE,  2),
-//            new KeenModel.Zone(KeenModel.Zone.Type.TIMES,   48),
-//            new KeenModel.Zone(KeenModel.Zone.Type.MINUS,   1),
-//            new KeenModel.Zone(KeenModel.Zone.Type.DIVIDE,  2),
-//            new KeenModel.Zone(KeenModel.Zone.Type.MINUS,   2),
-//            new KeenModel.Zone(KeenModel.Zone.Type.TIMES,   6),
-//            new KeenModel.Zone(KeenModel.Zone.Type.ADD,     5),
-//        };
-//
-//        KeenModel.GridCell[][] cells={
-//                {
-//                        new KeenModel.GridCell(size,1,zones[0]),
-//                        new KeenModel.GridCell(size,2,zones[0]),
-//                        new KeenModel.GridCell(size,4,zones[3]),
-//                        new KeenModel.GridCell(size,3,zones[5])
-//                },
-//                {
-//                        new KeenModel.GridCell(size,3,zones[1]),
-//                        new KeenModel.GridCell(size,4,zones[1]),
-//                        new KeenModel.GridCell(size,2,zones[3]),
-//                        new KeenModel.GridCell(size,1,zones[5])
-//                },
-//                {
-//                        new KeenModel.GridCell(size,4,zones[1]),
-//                        new KeenModel.GridCell(size,1,zones[4]),
-//                        new KeenModel.GridCell(size,3,zones[4]),
-//                        new KeenModel.GridCell(size,2,zones[5])
-//                },
-//                {
-//                        new KeenModel.GridCell(size,2,zones[2]),
-//                        new KeenModel.GridCell(size,3,zones[2]),
-//                        new KeenModel.GridCell(size,1,zones[6]),
-//                        new KeenModel.GridCell(size,4,zones[6])
-//                }
-//        };
-//
-//        return new KeenModel(size,zones,cells);
-//
-//    }
 
 }

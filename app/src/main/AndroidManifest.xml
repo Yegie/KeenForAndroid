@@ -8,7 +8,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         >
-        <activity android:name="org.yegie.keenforandroid.MenuActivity">
+        <activity android:name="org.yegie.keenforandroid.MenuActivity"
+                  android:screenOrientation="userPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,7 +18,8 @@
         </activity>
 
         <activity android:name="org.yegie.keenforandroid.KeenActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:screenOrientation="userPortrait"/>
     </application>
 
 </manifest>

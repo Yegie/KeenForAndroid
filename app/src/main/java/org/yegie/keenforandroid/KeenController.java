@@ -1,9 +1,11 @@
 package org.yegie.keenforandroid;
 
-import android.content.Context;
 import android.util.Log;
 
 /**
+ * Not a perfect implementation of MVC Since the view can see the model,
+ * but it functions pretty well.
+ *
  * Created by Sergey on 5/19/2016.
  */
 public class KeenController implements KeenView.OnGridClickListener {
@@ -13,6 +15,8 @@ public class KeenController implements KeenView.OnGridClickListener {
     private KeenView gameView;
     private KeenActivity parent;
 
+    //constructor
+    //sets up the controller as the listener for the game view
     public KeenController(KeenModel gameModel,KeenView gameView,KeenActivity parent)
     {
 
@@ -24,15 +28,17 @@ public class KeenController implements KeenView.OnGridClickListener {
 
     }
 
+    //handles a touch event anywhere on the screen after the game is won
     @Override
     public void onEndScreenClick()
     {
-        parent.returnToMainMenu(false);
+        parent.returnToMainMenu();
     }
 
+    //handles a click on the grid by updating the active cords
+    //or toggling between guess and answer
     @Override
     public void onGridClick(int x, int y) {
-        //Log.d(TAG,"Grid "+x+","+y+" clicked.");
 
         if(x == gameModel.getActiveX() && y == gameModel.getActiveY())
         {
@@ -47,9 +53,9 @@ public class KeenController implements KeenView.OnGridClickListener {
         gameView.invalidate();
     }
 
+    //handles a click of one of the number buttons
     @Override
     public void onButtonClicked(int i) {
-        Log.d(TAG,"Button "+i+" clicked.");
         short x = gameModel.getActiveX();
         short y = gameModel.getActiveY();
 
@@ -74,6 +80,7 @@ public class KeenController implements KeenView.OnGridClickListener {
 
     }
 
+    //handles a click of the undo button
     @Override
     public void onUndoButtonClick() {
         gameModel.undoOneStep();

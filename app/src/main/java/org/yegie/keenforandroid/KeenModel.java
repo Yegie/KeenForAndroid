@@ -5,15 +5,15 @@ import android.util.Log;
 import java.util.Stack;
 
 /**
+ * Model for a keen game
+ *
  * Created by Sergey on 5/19/2016.
  */
 public class KeenModel {
 
     private static final int MAX_SIZE = 9;
 
-    /**
-     * Stores any data that is linked to a square in the grid
-     */
+    //holds the data about a single grid cell
     public static class GridCell
     {
         boolean[] guesses;
@@ -21,7 +21,7 @@ public class KeenModel {
         int expectedValue;
         Zone zone;
 
-        public GridCell(int size, int eV, Zone zone)
+        public GridCell(int eV, Zone zone)
         {
             this.finalGuessValue = -1;
             this.guesses = new boolean[MAX_SIZE];
@@ -30,6 +30,7 @@ public class KeenModel {
         }
     }
 
+    //holds data about a single zone (area grouped by bold lines)
     static public class Zone
     {
         enum Type
@@ -70,8 +71,10 @@ public class KeenModel {
         }
     }
 
+    //a more memory friendly cell that is used for the
+    //undo stack (which could potentially get quite large)
     static public class CellState{
-        /**
+        /*
          * state pos 0: 0 = not final 1 = final
          * state pos 1-9: 0 = false 1 = true
          */
@@ -86,20 +89,17 @@ public class KeenModel {
 
     }
 
+    //variables that together describe the state of the game
     private final GridCell[][] gameGrid;
     private Stack<CellState> undo;
     private final Zone[] gameZones;
-
-
     private boolean finalGuess;
     private boolean puzzleWonVal;
     private short activeX;
     private short activeY;
     private int size;
 
-    /**
-     * constructor that initializes everything
-     */
+    //constructor that initializes everything to the default values
     public KeenModel(int size, Zone[] zones, GridCell[][] grid)
     {
         this.size = size;
@@ -112,19 +112,7 @@ public class KeenModel {
         activeY = -1;
     }
 
-    /**
-     * getter for the xy cords of the currently selected spot.
-     */
-    public short getActiveY(){return activeY;}
-    public short getActiveX(){return activeX;}
-
-    public void setActiveX(short activeX) {
-        this.activeX = activeX;
-    }
-    public void setActiveY(short activeY) {
-        this.activeY = activeY;
-    }
-
+    //public methods that allow other classes to modify/view the variables
     public void addCurToUndo(short x, short y){
         short state = 1;
         GridCell curCell = gameGrid[x][y];
@@ -164,6 +152,16 @@ public class KeenModel {
         }
     }
 
+    public short getActiveY(){return activeY;}
+    public short getActiveX(){return activeX;}
+
+    public void setActiveX(short activeX) {
+        this.activeX = activeX;
+    }
+    public void setActiveY(short activeY) {
+        this.activeY = activeY;
+    }
+
     public void clearGuesses(short x, short y){
         gameGrid[x][y].guesses = new boolean[MAX_SIZE];
     }
@@ -183,7 +181,6 @@ public class KeenModel {
     {
         puzzleWonVal = setPuzzleWon();
     }
-
     private boolean setPuzzleWon()
     {
         for(int x = 0; x < size; x++)
@@ -192,7 +189,6 @@ public class KeenModel {
                     return false;
         return true;
     }
-
     public boolean getPuzzleWon()
     {
         return puzzleWonVal;

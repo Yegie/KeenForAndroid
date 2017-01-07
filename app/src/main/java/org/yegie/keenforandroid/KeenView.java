@@ -14,10 +14,15 @@ import android.view.View;
 import java.util.Arrays;
 
 /**
+ * A view class that handles screen touches and renders the game model
+ * Mostly working for both vertical and horizontal, but the activities
+ * are currently hard coded to be vertical.
+ *
  * Created by Sergey on 5/19/2016.
  */
 public class KeenView extends View implements GestureDetector.OnGestureListener {
 
+    //all of the private variables needed to draw the game field and buttons
     private final float PADDING = 0.01f;
     private final float PADDING_GRID = 0.03f;
     private Paint ThinGridPaint;
@@ -30,26 +35,19 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
     private int size;
     private GestureDetector gestureDetector;
     private OnGridClickListener onGridClickListener=null;
-
     private float screenWidth, screenHeight;
     private float gridStartX, gridEndX, gridStartY, gridEndY, gridSize;
     private float buttonStartX, buttonEndX, buttonStartY, buttonEndY, buttonPanelWidth, buttonPanelHeight, buttonSize;
     private float buttonUndoStartX, buttonUndoStartY,buttonUndoEndX,buttonUndoEndY,buttonUndoPanelHeight,buttonUndoPanelWidth;
 
-    /** Interface for passing grid touches to the controller
+    /**
+     * Interface for passing grid touches to the controller
+     * this is implemented by the controller
      */
     interface OnGridClickListener {
-        /**
-         * When a grid cell clicked.
-         * @param x     X coord
-         * @param y     Y coord
-         */
+
         void onGridClick(int x, int y);
 
-        /**
-         * When a button with a digit clicked.
-         * @param i    Button number
-         */
         void onButtonClicked(int i);
 
         void onUndoButtonClick();
@@ -57,16 +55,24 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         void onEndScreenClick();
     }
 
+    //constructor that sets up some of the basic variables
     public KeenView(Context context,KeenModel gameState)
     {
         super(context);
         this.setClickable(true);
+
+        //in theory a view should ask the controller for any data contained in this
+        //but it is a lot faster to just let the view have a copy.
+        //if a client really cared about proper MVC this would have to be rewriten.
         this.gameState = gameState;
         this.size = gameState.getSize();
+        //--
+
         init(context);
         this.gestureDetector=new GestureDetector(context,this);
     }
 
+    //initialization of the paints used for the canvas
     private void init(Context context)
     {
 
@@ -104,10 +110,13 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
     }
 
+    //sets up the listener
     public void setOnGridClickListener(OnGridClickListener listener) {
         this.onGridClickListener=listener;
     }
 
+    //sets up all of the info needed to draw on the canvas.
+    //its really just keeping most of the math in one place
     @Override
     public void onSizeChanged (int w, int h, int oldW, int oldH)
     {
@@ -167,6 +176,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         }
     }
 
+    //this actually draws the grid, guesses, answers, and buttons
+    //it mostly uses the numbers set up in init and just draws lines between them
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -223,7 +234,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
     }
 
-
+    //could be contained in the on draw, just separated for organizational purposes
+    //this draws the partial and final guesses on the grid
     private void drawGuess(Canvas canvas) {
 
         for(short y = 0; y < size; y++)
@@ -275,6 +287,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         }
     }
 
+    //helper method used to determine whether the current number is valid
+    //in a latin square (note: not necessarily a correct number)
     private boolean isValidGuess(short x, short y) {
         for(short i = 0; i < size; i++)
         {
@@ -290,6 +304,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         return true;
     }
 
+    //could be contained in the on draw, just separated for organizational purposes
+    //this draws number button panel
     private void drawButtonPanel(Canvas canvas) {
 
         if(buttonPanelWidth>buttonPanelHeight)
@@ -320,7 +336,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         }
     }
 
-
+    //could be contained in the on draw, just separated for organizational purposes
+    //this draws the thicker boarders for zones and their labels
     private void drawZoneBordersAndLabels(Canvas canvas) {
         KeenModel.Zone[] zones = gameState.getGameZones();
         boolean[] drawn = new boolean[zones.length];
@@ -380,10 +397,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
     }
 
-    /**
-     * checks if the gamestate has a set of active cordiantes.
-     *
-     */
+    //helper method that checks if there are coordinates currently selected by the user
     private boolean hasActiveCords()
     {
         int x = gameState.getActiveX();
@@ -394,7 +408,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         return false;
     }
 
-
+    //the following methods all handle various gesture events and either ignore them
+    //or report them to the listener by calling the appropriate methods
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);

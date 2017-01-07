@@ -1,6 +1,9 @@
 package org.yegie.keenforandroid;
 
 /**
+ * This class is not used in the current version of the program,
+ * however if we wanted to get rid of the NDK it would be needed so I left it in.
+ *
  * Created by Sergey on 7/30/2016.
  */
 public class DSF {
