@@ -461,8 +461,8 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         return false;
     }
 
-    //the following methods all handle various gesture events and either ignore them
-    //or report them to the listener by calling the appropriate methods
+    //the following methods all handle various gesture events by either ignoring them
+    //or reporting them to the listener by calling the appropriate methods
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);

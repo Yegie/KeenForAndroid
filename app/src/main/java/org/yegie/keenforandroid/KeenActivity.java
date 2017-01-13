@@ -50,6 +50,7 @@ public class KeenActivity extends Activity {
         setContentView(R.layout.activity_keen);
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
     }
 
     //so that other classes can call the finish function
@@ -67,7 +68,7 @@ public class KeenActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null) {
+        if(!continuing && extras != null) {
             continuing = extras.getBoolean(MenuActivity.GAME_CONT, false);
         }
 
@@ -103,7 +104,7 @@ public class KeenActivity extends Activity {
     {
         super.onPause();
 
-        String modelAsString = new Gson().toJson(gameModel);
+        String modelAsString = new Gson().toJson(gameModel,KeenModel.class);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(SAVE_MODEL,modelAsString);
         editor.putBoolean(CAN_CONT,!gameModel.getPuzzleWon());
@@ -126,6 +127,7 @@ public class KeenActivity extends Activity {
 
         // Allowing onResume to understand that the current game needs to be loaded
         continuing = true;
+
     }
 
     //starts a multi threaded process to generate a new level
