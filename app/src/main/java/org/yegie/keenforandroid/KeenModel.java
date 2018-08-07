@@ -1,7 +1,5 @@
 package org.yegie.keenforandroid;
 
-import android.util.Log;
-
 import java.util.Stack;
 
 /**
@@ -9,19 +7,19 @@ import java.util.Stack;
  *
  * Created by Sergey on 5/19/2016.
  */
-public class KeenModel {
+class KeenModel {
 
     private static final int MAX_SIZE = 9;
 
     //holds the data about a single grid cell
-    public static class GridCell
+    static class GridCell
     {
         boolean[] guesses;
         int finalGuessValue;
         int expectedValue;
         Zone zone;
 
-        public GridCell(int eV, Zone zone)
+        GridCell(int eV, Zone zone)
         {
             this.finalGuessValue = -1;
             this.guesses = new boolean[MAX_SIZE];
@@ -31,7 +29,7 @@ public class KeenModel {
     }
 
     //holds data about a single zone (area grouped by bold lines)
-    static public class Zone
+    static class Zone
     {
         enum Type
         {
@@ -42,7 +40,7 @@ public class KeenModel {
         int expectedValue;
         int code;
 
-        public Zone(Type type, int eV, int code)
+        Zone(Type type, int eV, int code)
         {
             this.zoneType = type;
             this.expectedValue = eV;
@@ -73,7 +71,7 @@ public class KeenModel {
 
     //a more memory friendly cell that is used for the
     //undo stack (which could potentially get quite large)
-    static public class CellState{
+    private static class CellState{
         /*
          * state pos 0: 0 = not final 1 = final
          * state pos 1-9: 0 = false 1 = true
@@ -81,7 +79,7 @@ public class KeenModel {
         short state;
         short x,y;
 
-        public CellState(short state, short x, short y){
+        CellState(short state, short x, short y){
             this.state = state;
             this.x = x;
             this.y = y;
@@ -100,7 +98,7 @@ public class KeenModel {
     private int size;
 
     //constructor that initializes everything to the default values
-    public KeenModel(int size, Zone[] zones, GridCell[][] grid)
+    KeenModel(int size, Zone[] zones, GridCell[][] grid)
     {
         this.size = size;
         this.gameGrid = grid;
@@ -113,7 +111,7 @@ public class KeenModel {
     }
 
     //public methods that allow other classes to modify/view the variables
-    public void addCurToUndo(short x, short y){
+    void addCurToUndo(short x, short y){
         short state = 1;
         GridCell curCell = gameGrid[x][y];
         if(curCell.finalGuessValue == -1) {
@@ -131,7 +129,7 @@ public class KeenModel {
         undo.push(val);
     }
 
-    public void undoOneStep(){
+    void undoOneStep(){
         if(!undo.empty()) {
             CellState oldCell = undo.pop();
             short x = oldCell.x;
@@ -152,23 +150,23 @@ public class KeenModel {
         }
     }
 
-    public short getActiveY(){return activeY;}
-    public short getActiveX(){return activeX;}
+    short getActiveY(){return activeY;}
+    short getActiveX(){return activeX;}
 
-    public void setActiveX(short activeX) {
+    void setActiveX(short activeX) {
         this.activeX = activeX;
     }
-    public void setActiveY(short activeY) {
+    void setActiveY(short activeY) {
         this.activeY = activeY;
     }
 
-    public void clearGuesses(short x, short y){
+    void clearGuesses(short x, short y){
         gameGrid[x][y].guesses = new boolean[MAX_SIZE];
     }
-    public void clearFinal(short x, short y){
+    void clearFinal(short x, short y){
         gameGrid[x][y].finalGuessValue = -1;
     }
-    public void setCellFinalGuess(short x, short y, int guess){
+    void setCellFinalGuess(short x, short y, int guess){
         if(gameGrid[x][y].finalGuessValue == guess)
         {
             gameGrid[x][y].finalGuessValue = -1;
@@ -177,7 +175,7 @@ public class KeenModel {
         }
     }
 
-    public void puzzleWon()
+    void puzzleWon()
     {
         puzzleWonVal = setPuzzleWon();
         if(puzzleWonVal) {
@@ -193,21 +191,21 @@ public class KeenModel {
                     return false;
         return true;
     }
-    public boolean getPuzzleWon()
+    boolean getPuzzleWon()
     {
         return puzzleWonVal;
     }
 
-    public void addToCellGuesses(short x, short y, int guess){
+    void addToCellGuesses(short x, short y, int guess){
         gameGrid[x][y].guesses[guess-1] = !gameGrid[x][y].guesses[guess-1];
     }
 
-    public GridCell getCell(short x, short y)
+    GridCell getCell(short x, short y)
     {
         return gameGrid[x][y];
     }
 
-    public Zone[] getGameZones() {
+    Zone[] getGameZones() {
         return gameZones;
     }
 
@@ -216,7 +214,7 @@ public class KeenModel {
         return size;
     }
 
-    public boolean getFinalGuess() {return finalGuess; }
-    public void toggleFinalGuess() {finalGuess = !finalGuess;}
+    boolean getFinalGuess() {return finalGuess; }
+    void toggleFinalGuess() {finalGuess = !finalGuess;}
 
 }

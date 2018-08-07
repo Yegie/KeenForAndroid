@@ -107,7 +107,11 @@ public class KeenActivity extends Activity {
         String modelAsString = new Gson().toJson(gameModel,KeenModel.class);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(SAVE_MODEL,modelAsString);
-        editor.putBoolean(CAN_CONT,!gameModel.getPuzzleWon());
+        if(gameModel != null) {
+            editor.putBoolean(CAN_CONT, !gameModel.getPuzzleWon());
+        } else {
+            editor.putBoolean(CAN_CONT, false);
+        }
         editor.apply();
     }
 

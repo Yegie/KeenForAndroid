@@ -1,21 +1,20 @@
 package org.yegie.keenforandroid;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 /**
+ * Menu Activity that handles selecting and starting a level
+ *
  * Created by Sergey on 7/17/2016.
  */
 public class MenuActivity extends Activity {
@@ -33,6 +32,7 @@ public class MenuActivity extends Activity {
     private int gameSize=3;
     private int gameDiff=1;
     private int gameMult=0;
+    @SuppressWarnings("FieldCanBeLocal")
     private long gameSeed=1010101;
 
     //pref file stored between games
@@ -40,7 +40,6 @@ public class MenuActivity extends Activity {
 
     //the buttons that are created in onCreate
     private Button contButton;
-    private Button startButton;
     private Spinner sizeButton;
     private Spinner diffButton;
 
@@ -53,7 +52,7 @@ public class MenuActivity extends Activity {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        startButton = (Button) findViewById(R.id.button_start);
+        Button startButton = (Button) findViewById(R.id.button_start);
         contButton = (Button) findViewById(R.id.button_cont);
 
         //set up the size button

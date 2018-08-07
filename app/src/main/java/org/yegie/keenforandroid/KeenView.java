@@ -11,8 +11,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Arrays;
-
 /**
  * A view class that handles screen touches and renders the game model
  * Mostly working for both vertical and horizontal, but the activities
@@ -24,6 +22,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
     //all of the private variables needed to draw the game field and buttons
     private final float PADDING = 0.01f;
+    @SuppressWarnings("FieldCanBeLocal")
     private final float PADDING_GRID = 0.03f;
     private Paint ThinGridPaint;
     private Paint ThickGridPaint;
@@ -68,16 +67,15 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         this.size = gameState.getSize();
         //--
 
-        init(context);
+        init();
         this.gestureDetector=new GestureDetector(context,this);
     }
 
     //initialization of the paints used for the canvas
-    private void init(Context context)
+    private void init()
     {
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        float textSize = dm.densityDpi/6f;
 
         ThinGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         ThinGridPaint.setColor(Color.BLACK);
@@ -130,6 +128,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
             {
                 gridStartX = w-w*(1-PADDING_GRID);
                 gridEndX   = w-w*PADDING_GRID;
+                //noinspection SuspiciousNameCombination
                 gridStartY = gridStartX;
                 gridEndY   = gridStartY + (gridEndX-gridStartX);
             }
@@ -137,6 +136,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
             {
                 gridStartX = h-h*(1-PADDING_GRID);
                 gridEndX   = h-h*PADDING_GRID;
+                //noinspection SuspiciousNameCombination
                 gridStartY = gridStartX;
                 gridEndY   = gridStartY + (gridEndX-gridStartX);
             }
@@ -456,9 +456,7 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
         int x = gameState.getActiveX();
         int y = gameState.getActiveY();
 
-        if(x >= 0 && y >= 0)
-            return true;
-        return false;
+        return x >= 0 && y >= 0;
     }
 
     //the following methods all handle various gesture events by either ignoring them
@@ -518,30 +516,18 @@ public class KeenView extends View implements GestureDetector.OnGestureListener 
 
     private boolean cordsAreUndo(float x, float y) {
 
-        if(x>buttonUndoEndX || x<buttonUndoStartX)
-            return false;
-        if(y>buttonUndoEndY || y<buttonUndoStartY)
-            return false;
+        return !(x > buttonUndoEndX || x < buttonUndoStartX) && !(y > buttonUndoEndY || y < buttonUndoStartY);
 
-        return true;
     }
 
     private boolean cordsAreNumbers(float x, float y) {
 
-        if(x>buttonEndX || x<buttonStartX)
-            return false;
-        if(y>buttonEndY || y<buttonStartY)
-            return false;
+        return !(x > buttonEndX || x < buttonStartX) && !(y > buttonEndY || y < buttonStartY);
 
-        return true;
     }
 
     private boolean cordsWithinGrid(float x, float y) {
-        if(x>gridEndX || x<gridStartX)
-            return false;
-        if(y>gridEndY || y<gridStartY)
-            return false;
-        return true;
+        return !(x > gridEndX || x < gridStartX) && !(y > gridEndY || y < gridStartY);
     }
 
     @Override

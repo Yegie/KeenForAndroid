@@ -1,14 +1,12 @@
 package org.yegie.keenforandroid;
 
-import android.util.Log;
-
 /**
  * Not a perfect implementation of MVC Since the view can see the model,
  * but it functions pretty well.
  *
  * Created by Sergey on 5/19/2016.
  */
-public class KeenController implements KeenView.OnGridClickListener {
+class KeenController implements KeenView.OnGridClickListener {
     private static final String TAG = "KeenController";
 
     private KeenModel gameModel;
@@ -17,7 +15,7 @@ public class KeenController implements KeenView.OnGridClickListener {
 
     //constructor
     //sets up the controller as the listener for the game view
-    public KeenController(KeenModel gameModel,KeenView gameView,KeenActivity parent)
+    KeenController(KeenModel gameModel, KeenView gameView, KeenActivity parent)
     {
 
         this.gameModel = gameModel;

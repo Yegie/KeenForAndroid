@@ -1190,7 +1190,7 @@ done
 			  case C_MUL: *p++ = 'm'; break;
 			  case C_DIV: *p++ = 'd'; break;
 			}
-			p += sprintf(p, "%04ld", clues[j] & ~CMASK);
+			p += sprintf(p, "%05ld", clues[j] & ~CMASK);
 
 			*p++=',';
 		}

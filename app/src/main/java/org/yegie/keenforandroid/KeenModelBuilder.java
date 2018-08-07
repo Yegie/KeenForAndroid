@@ -1,13 +1,8 @@
 package org.yegie.keenforandroid;
 
-import android.nfc.Tag;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Random;
-
-
 
 /**
  * This contains a large commented out section which is a large part of the level gen
@@ -15,7 +10,7 @@ import java.util.Random;
  *
  * Created by Sergey on 5/25/2016.
  */
-public class KeenModelBuilder {
+class KeenModelBuilder {
 
     /*
  * Maximum size of any clue block. Very large ones are annoying in UI
@@ -418,7 +413,7 @@ public class KeenModelBuilder {
 
     //instead of rewriting the library in java this uses an NDK to access a modified version
     //of the library in C and then creates a KeenModel based off of it.
-    public KeenModel build(int size, int diff, int multOnlt, long seed)
+    KeenModel build(int size, int diff, int multOnlt, long seed)
     {
 
         String levelAsString = getLevelFromC(size,diff,multOnlt,seed);
@@ -450,8 +445,8 @@ public class KeenModelBuilder {
 
         for(int i = 0; i<zoneCount; i++)
         {
-            char sym = levelAsString.charAt(i*6);
-            int val = Integer.parseInt(levelAsString.substring(i*6+1,i*6+5));
+            char sym = levelAsString.charAt(i*7);
+            int val = Integer.parseInt(levelAsString.substring(i*7+1,i*7+6));
             switch(sym)
             {
                 case 'a':
@@ -469,14 +464,14 @@ public class KeenModelBuilder {
             }
         }
 
-        levelAsString = levelAsString.substring(zoneCount*6);
+        levelAsString = levelAsString.substring(zoneCount*7);
 
         class zonePairing
         {
-            int raw;
-            int real;
+            private int raw;
+            private int real;
 
-            public zonePairing(int a, int b)
+            private zonePairing(int a, int b)
             {
                 raw = a; real = b;
             }
