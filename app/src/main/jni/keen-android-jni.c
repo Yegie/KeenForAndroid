@@ -1,12 +1,11 @@
 #include <jni.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "keen.h"
 
 JNIEXPORT jstring JNICALL
 Java_org_yegie_keenforandroid_KeenModelBuilder_getLevelFromC(JNIEnv *env, jobject instance, jint size, jint diff, jint multOnly, jlong seed){
-
-
 
 
     struct game_params params;
@@ -62,7 +61,7 @@ static void memswap(void *av, void *bv, int size)
     char *a = av, *b = bv;
 
     while (size > 0) {
-        int thislen = min(size, sizeof(tmpbuf));
+        size_t thislen = min((size_t)size, sizeof(tmpbuf));
         memcpy(tmpbuf, a, thislen);
         memcpy(a, b, thislen);
         memcpy(b, tmpbuf, thislen);
@@ -75,10 +74,10 @@ static void memswap(void *av, void *bv, int size)
 void shuffle(void *array, int nelts, int eltsize, random_state *rs)
 {
     char *carray = (char *)array;
-    int i;
+    unsigned long i;
 
-    for (i = nelts; i-- > 1 ;) {
-        int j = random_upto(rs, i+1);
+    for (i = (unsigned long)nelts; i-- > 1 ;) {
+        unsigned long j = random_upto(rs, i+1);
         if (j != i)
             memswap(carray + eltsize * i, carray + eltsize * j, eltsize);
     }
