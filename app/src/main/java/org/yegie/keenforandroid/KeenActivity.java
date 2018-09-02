@@ -19,12 +19,13 @@ public class KeenActivity extends Activity {
     private int diff = 1;
     private int multOnly = 0;
     private long seed = 10101;
-    private boolean continuing = false;
+    private boolean continuing;
     private KeenModel gameModel;
 
     //names by which to read from saved prefs
-    private final String SAVE_MODEL = "save_model";
-    public static final String CAN_CONT = "can_continue";
+    private final static String SAVE_MODEL = "save_model";
+    protected final static String CAN_CONT = "can_continue";
+    private final static String IS_CONT = "is_continuing";
 
     //shared prefs file
     private SharedPreferences sharedPref;
@@ -49,6 +50,7 @@ public class KeenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keen);
 
+        continuing = savedInstanceState != null && savedInstanceState.getBoolean(IS_CONT, false);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
     }
@@ -57,6 +59,13 @@ public class KeenActivity extends Activity {
     public void returnToMainMenu()
     {
         finish();
+    }
+
+    // If a new game was started and then the process was killed the "continuing"
+    // would default to false unless saved here.
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putBoolean(IS_CONT,continuing);
     }
 
     //check if resuming a previous game and then either restore that game from saved prefs
@@ -104,14 +113,18 @@ public class KeenActivity extends Activity {
     {
         super.onPause();
 
-        String modelAsString = new Gson().toJson(gameModel,KeenModel.class);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(SAVE_MODEL,modelAsString);
-        if(gameModel != null) {
+
+        if(gameModel!=null) {
+            String modelAsString = new Gson().toJson(gameModel, KeenModel.class);
+            editor.putString(SAVE_MODEL, modelAsString);
             editor.putBoolean(CAN_CONT, !gameModel.getPuzzleWon());
-        } else {
+        }
+        else {
+            editor.putString(SAVE_MODEL, "");
             editor.putBoolean(CAN_CONT, false);
         }
+
         editor.apply();
     }
 
