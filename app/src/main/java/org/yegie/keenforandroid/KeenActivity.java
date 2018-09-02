@@ -20,7 +20,7 @@ public class KeenActivity extends Activity {
     private int multOnly = 0;
     private long seed = 10101;
     private boolean continuing;
-    private KeenModel gameModel;
+    private KeenModel gameModel=null;
 
     //names by which to read from saved prefs
     private final static String SAVE_MODEL = "save_model";
@@ -140,11 +140,22 @@ public class KeenActivity extends Activity {
         ProgressBar prog = (ProgressBar) findViewById(R.id.progress_bar);
         prog.setVisibility(View.GONE);
 
+        // When a game was resumed without restarting the activity the container
+        // would already have a previous game view and if a new view is just added
+        // it would be added off-screen below the old one. The user would continue
+        // to play the old game, but save state and related things would be called
+        // on the new invisible game.
+        //
+        View existing=container.findViewById(R.id.game_view);
+        if(existing!=null)
+            container.removeView(existing);
+
+        gameView.setId(R.id.game_view);
+
         container.addView(gameView);
 
         // Allowing onResume to understand that the current game needs to be loaded
         continuing = true;
-
     }
 
     //starts a multi threaded process to generate a new level

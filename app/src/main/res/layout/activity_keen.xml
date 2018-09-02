@@ -16,4 +16,13 @@
         style="@android:style/Widget.ProgressBar.Large"
         android:id="@+id/progress_bar" />
 
+    <!-- This gets replaced by the real game view.
+        Primarily here to generate a view ID.
+    -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/game_view"
+        />
+
 </LinearLayout>
