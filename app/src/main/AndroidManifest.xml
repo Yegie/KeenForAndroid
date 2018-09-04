@@ -9,7 +9,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         >
         <activity android:name="org.yegie.keenforandroid.MenuActivity"
-                  android:screenOrientation="userPortrait">
+                  android:screenOrientation="userPortrait"
+                  android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
