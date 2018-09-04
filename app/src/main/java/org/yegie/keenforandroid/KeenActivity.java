@@ -135,9 +135,9 @@ public class KeenActivity extends Activity {
         this.gameModel = gameModel;
         KeenView gameView = new KeenView(this,gameModel);
         KeenController gameController = new KeenController(gameModel,gameView,this);
-        ViewGroup container = (ViewGroup) findViewById(R.id.keen_container);
+        ViewGroup container = findViewById(R.id.keen_container);
 
-        ProgressBar prog = (ProgressBar) findViewById(R.id.progress_bar);
+        ProgressBar prog = findViewById(R.id.progress_bar);
         prog.setVisibility(View.GONE);
 
         // When a game was resumed without restarting the activity the container

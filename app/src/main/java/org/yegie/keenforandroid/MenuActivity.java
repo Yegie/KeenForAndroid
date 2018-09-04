@@ -52,11 +52,11 @@ public class MenuActivity extends Activity {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        Button startButton = (Button) findViewById(R.id.button_start);
-        contButton = (Button) findViewById(R.id.button_cont);
+        Button startButton = findViewById(R.id.button_start);
+        contButton = findViewById(R.id.button_cont);
 
         //set up the size button
-        sizeButton= (Spinner) findViewById(R.id.button_size);
+        sizeButton= findViewById(R.id.button_size);
 
         ArrayAdapter<CharSequence> sizeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.size_list, R.layout.menu_spinner_layout);
@@ -85,7 +85,7 @@ public class MenuActivity extends Activity {
 
 
         //set up the diff button
-        diffButton= (Spinner) findViewById(R.id.button_diff);
+        diffButton = findViewById(R.id.button_diff);
         ArrayAdapter<CharSequence> diffAdapter = ArrayAdapter.createFromResource(this,
                 R.array.diff_list, R.layout.menu_spinner_layout);
         diffAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -145,7 +145,7 @@ public class MenuActivity extends Activity {
         sizeButton.setSelection(gameSize-3);
 
         gameMult = sharedPref.getBoolean(MENU_MULT,false) ? 1 : 0;
-        CheckBox ckbox= (CheckBox) findViewById(R.id.button_mult);
+        CheckBox ckbox = findViewById(R.id.button_mult);
         ckbox.setChecked(gameMult!=0);
     }
 
