@@ -6,8 +6,8 @@ android {
         applicationId "org.yegie.keenforandroid"
         minSdkVersion 22
         targetSdkVersion 27
-        versionCode 12
-        versionName "1.2"
+        versionCode 13
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
