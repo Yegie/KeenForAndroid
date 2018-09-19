@@ -4,5 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:textSize="35sp"
-    android:textColor="@color/colorBlack"
+    android:textColor="?attr/primaryTextColor"
+    android:background="?attr/backgroundCardColor"
     android:gravity="center"/>

@@ -111,7 +111,6 @@ public class KeenActivity extends Activity {
     @Override
     public void onPause()
     {
-        super.onPause();
 
         SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -126,6 +125,7 @@ public class KeenActivity extends Activity {
         }
 
         editor.apply();
+        super.onPause();
     }
 
     //called by the game gen thread after it creates a game model

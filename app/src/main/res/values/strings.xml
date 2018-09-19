@@ -6,6 +6,7 @@
     <string name="diff">Difficulty</string>
     <string name="size">Size</string>
     <string name="mult">Multiplication Only</string>
+    <string name="dark_mode">Enable Dark Mode</string>
     <string-array name="diff_list">
         <item>Easy</item>
         <item>Medium</item>

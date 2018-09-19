@@ -27,16 +27,12 @@ public class MenuActivity extends Activity {
     protected static final String MENU_SIZE = "menuSize";
     protected static final String MENU_DIFF = "menuDiff";
     protected static final String MENU_MULT = "menuMult";
+    protected static final String DARK_MODE = "darkMode";
 
     //default values for game launch
-    private int gameSize=3;
-    private int gameDiff=1;
-    private int gameMult=0;
     @SuppressWarnings("FieldCanBeLocal")
     private long gameSeed=1010101;
-
-    //pref file stored between games
-    private SharedPreferences sharedPref;
+    private ApplicationCore app;
 
     //the buttons that are created in onCreate
     private Button contButton;
@@ -47,10 +43,11 @@ public class MenuActivity extends Activity {
     // create and assign listeners for all the buttons and spinners
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        app = (ApplicationCore) getApplication();
+        if(app.isDarkMode())
+            setTheme(R.style.AppTheme_Base_Dark);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
-        sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         Button startButton = findViewById(R.id.button_start);
         contButton = findViewById(R.id.button_cont);
@@ -70,7 +67,7 @@ public class MenuActivity extends Activity {
                 String diffs[] = getResources().getStringArray(R.array.size_list);
                 for (int i = 0; i < diffs.length; ++i) {
                     if (diffs[i].equals(itemSelected)) {
-                        gameSize = i + 3;
+                        app.setGameSize(i + 3);
                         break;
                     }
                 }
@@ -100,7 +97,7 @@ public class MenuActivity extends Activity {
                 {
                     if(diffs[i].equals(itemSelected))
                     {
-                        gameDiff = i;
+                        app.setGameDiff(i);
                         break;
                     }
                 }
@@ -135,39 +132,38 @@ public class MenuActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        boolean canCont=sharedPref.getBoolean(KeenActivity.CAN_CONT,false);
-        contButton.setVisibility(canCont ? View.VISIBLE : View.GONE);
+        contButton.setVisibility(app.isCanCont() ? View.VISIBLE : View.GONE);
 
-        gameDiff = sharedPref.getInt(MENU_DIFF,0);
-        diffButton.setSelection(gameDiff);
+        diffButton.setSelection(app.getGameDiff());
 
-        gameSize = sharedPref.getInt(MENU_SIZE,3);
-        sizeButton.setSelection(gameSize-3);
+        sizeButton.setSelection(app.getGameSize()-3);
 
-        gameMult = sharedPref.getBoolean(MENU_MULT,false) ? 1 : 0;
+//        CheckBox ckboxD = findViewById(R.id.button_dark_mode);
+//        ckboxD.setChecked(app.isDarkMode());
+
         CheckBox ckbox = findViewById(R.id.button_mult);
-        ckbox.setChecked(gameMult!=0);
+        ckbox.setChecked(app.getGameMult()!=0);
     }
 
     //save the current menu selections to be restored at a later point
     @Override
     public void onPause(){
+        app.savePrefs();
         super.onPause();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(MENU_MULT,gameMult!=0);
-        editor.putInt(MENU_DIFF,gameDiff);
-        editor.putInt(MENU_SIZE,gameSize);
-        editor.apply();
     }
 
     //handler and listener for checkbox clicks (mult only button)
     public void onCheckboxClicked(View view)
     {
         boolean checked = ((CheckBox) view).isChecked();
-        if(checked && view.getId()==R.id.button_mult)
-            gameMult = 1;
-        else
-            gameMult = 0;
+        switch(view.getId()) {
+            case R.id.button_mult:
+                app.setGameMult(checked ? 1 : 0);
+                break;
+//            case R.id.button_dark_mode:
+//                app.setDarkMode(checked);
+//                break;
+        }
     }
 
     //start the game activity with the correct parameters
@@ -176,9 +172,9 @@ public class MenuActivity extends Activity {
         gameSeed = System.currentTimeMillis();
         Intent intent=new Intent(this,KeenActivity.class);
         intent.putExtra(GAME_CONT, false);
-        intent.putExtra(GAME_SIZE,gameSize);
-        intent.putExtra(GAME_DIFF,gameDiff);
-        intent.putExtra(GAME_MULT,gameMult);
+        intent.putExtra(GAME_SIZE,app.getGameSize());
+        intent.putExtra(GAME_DIFF,app.getGameDiff());
+        intent.putExtra(GAME_MULT,app.getGameMult());
         intent.putExtra(GAME_SEED,gameSeed);
         startActivity(intent);
     }

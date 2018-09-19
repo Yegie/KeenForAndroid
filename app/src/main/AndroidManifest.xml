@@ -6,7 +6,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:name=".ApplicationCore"
+        android:theme="@style/AppTheme.Base.Light"
         >
         <activity android:name="org.yegie.keenforandroid.MenuActivity"
                   android:screenOrientation="userPortrait"

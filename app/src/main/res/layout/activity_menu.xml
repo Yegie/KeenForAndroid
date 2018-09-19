@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundCardColor">
 
     <!--<ImageView-->
         <!--android:layout_width="match_parent"-->
@@ -17,7 +18,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:text="@string/title"
-        android:textColor="@color/colorBlack"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="54sp"
         android:layout_gravity="center"
         android:layout_margin="16dp"
@@ -33,7 +34,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:textSize="25sp"
-        android:textColor="@color/colorBlack"
+        style="?android:attr/buttonStyle"
+        android:textColor="?attr/primaryTextColor"
         android:text="@string/play"/>
 
     <Spinner
@@ -46,7 +48,7 @@
         android:layout_marginLeft="20dp"
         android:id="@+id/button_size"
         android:textSize="25sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="?attr/primaryTextColor"
         android:layout_gravity="center_horizontal" />
 
 
@@ -60,7 +62,7 @@
         android:layout_marginLeft="20dp"
         android:id="@+id/button_diff"
         android:textSize="25sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="?attr/primaryTextColor"
         android:layout_gravity="center_horizontal" />
 
     <CheckBox
@@ -70,7 +72,7 @@
         android:layout_marginBottom="5dp"
         android:onClick="onCheckboxClicked"
         android:textSize="30sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="?attr/primaryTextColor"
         android:text="@string/mult"
         android:id="@+id/button_mult"
         android:layout_gravity="center_horizontal" />
@@ -85,7 +87,20 @@
         android:layout_marginRight="20dp"
         android:visibility="invisible"
         android:textSize="25sp"
-        android:textColor="@color/colorBlack"
+        style="?android:attr/buttonStyle"
+        android:textColor="?attr/primaryTextColor"
         android:text="@string/cont"/>
+
+    <!--<CheckBox-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:onClick="onCheckboxClicked"-->
+        <!--android:textSize="30sp"-->
+        <!--android:textColor="?attr/primaryTextColor"-->
+        <!--android:text="@string/dark_mode"-->
+        <!--android:id="@+id/button_dark_mode"-->
+        <!--android:layout_gravity="center_horizontal" />-->
 
 </LinearLayout>
