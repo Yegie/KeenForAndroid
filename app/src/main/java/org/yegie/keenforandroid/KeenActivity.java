@@ -117,11 +117,11 @@ public class KeenActivity extends Activity {
         if(gameModel!=null) {
             String modelAsString = new Gson().toJson(gameModel, KeenModel.class);
             editor.putString(SAVE_MODEL, modelAsString);
-            editor.putBoolean(CAN_CONT, !gameModel.getPuzzleWon());
+            ((ApplicationCore)getApplication()).setCanCont(!gameModel.getPuzzleWon());
         }
         else {
             editor.putString(SAVE_MODEL, "");
-            editor.putBoolean(CAN_CONT, false);
+            ((ApplicationCore)getApplication()).setCanCont(false);
         }
 
         editor.apply();

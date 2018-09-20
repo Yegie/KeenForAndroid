@@ -53,6 +53,9 @@ public class ApplicationCore extends Application {
     }
 
     public void setCanCont(boolean canCont) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(KeenActivity.CAN_CONT,canCont);
+        editor.apply();
         this.canCont = canCont;
     }
 
